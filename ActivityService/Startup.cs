@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using NJsonSchema;
 using NSwag.AspNetCore;
 using System.Reflection;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace ActivityService
 {
@@ -30,7 +31,11 @@ namespace ActivityService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSwagger();
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
+            services.AddSwaggerDocument();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,15 +50,31 @@ namespace ActivityService
                 app.UseHsts();
             }
 
-            app.UseSwaggerUi3WithApiExplorer(settings =>
-            {
-                settings.GeneratorSettings.DefaultPropertyNameHandling = 
-                    PropertyNameHandling.CamelCase;
-            });
-
-        app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             
             app.UseMvc();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            
+            app.UseSwagger(config => config.PostProcess = (document, request) =>
+            {
+                if (request.Headers.ContainsKey("X-External-Host"))
+                {
+                    // Change document server settings to public
+                    document.Host = request.Headers["X-External-Host"].First();
+                    document.BasePath = request.Headers["X-External-Path"].First();
+                }
+            });
+
+            app.UseSwaggerUi3(config => config.TransformToExternalPath = (internalUiRoute, request) =>
+            {
+                // The header X-External-Path is set in the nginx.conf file
+                var externalPath = request.Headers.ContainsKey("X-External-Path") ? request.Headers["X-External-Path"].First() : "";
+                return externalPath + internalUiRoute;
+            });
         }
     }
 }
