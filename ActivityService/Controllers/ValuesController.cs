@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActivityService.Services;
+using EasyNetQ;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityService.Controllers
@@ -10,10 +12,18 @@ namespace ActivityService.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private ITopic topic;
+        public ValuesController(ITopic topic)
+        {
+            this.topic = topic;
+        }
+        
+        
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+            topic.Bus.Publish("message", topic.Name);
             return new string[] {"value1", "value2"};
         }
 

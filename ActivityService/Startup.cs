@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using NJsonSchema;
 using NSwag.AspNetCore;
 using System.Reflection;
+using ActivityService.Injections;
 using Microsoft.AspNetCore.HttpOverrides;
 
 namespace ActivityService
@@ -36,6 +37,7 @@ namespace ActivityService
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
             services.AddSwaggerDocument();
+            services.AddActivity();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,8 +54,6 @@ namespace ActivityService
 
             app.UseHttpsRedirection();
             
-            app.UseMvc();
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -75,6 +75,8 @@ namespace ActivityService
                 var externalPath = request.Headers.ContainsKey("X-External-Path") ? request.Headers["X-External-Path"].First() : "";
                 return externalPath + internalUiRoute;
             });
+            
+            app.UseMvc();
         }
     }
 }
