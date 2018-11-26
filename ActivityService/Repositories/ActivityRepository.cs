@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -39,25 +40,12 @@ namespace ActivityService.Repositories
             return Context.Activities.DeleteOneAsync(activity => activity.Id == id);
         }
 
-        public Task<UpdateResult> UpdateOption(string id, string option)
+        public Task<UpdateResult> UpdateAsync(ObjectId id, Expression<Func<UserActivity, string>> updater, string value)
         {
-            var objectId = ObjectId.Parse(id);
             var update = Builders<UserActivity>.Update
-                .Set(ac => ac.Payload, option)
-                .Set(ac => ac.UpdatedAt, DateTime.UtcNow);
- 
-            var updateOption = new UpdateOptions { IsUpsert = true };
-            return Context.Activities.UpdateOneAsync(ac => ac.Id == objectId, update, updateOption);
-        }
-
-        public Task<bool> UpdatePayload(string id, string payload)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateStatus(string id, string status)
-        {
-            throw new System.NotImplementedException();
+                .Set(updater, value)
+                .Set(activity => activity.UpdatedAt, DateTime.UtcNow);
+            return Context.Activities.UpdateOneAsync(activity => activity.Id == id, update);
         }
     }
 }

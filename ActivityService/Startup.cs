@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NJsonSchema;
 using NSwag.AspNetCore;
-using System.Reflection;
 using ActivityService.Injections;
 using Microsoft.AspNetCore.HttpOverrides;
 

@@ -44,5 +44,27 @@ namespace ConceptTest
             
             Assert.True(result.IsAcknowledged);
         }
+
+        [Fact]
+        public async Task UpdateOptionOfActivity()
+        {
+            IContext context = new ActivityContext();
+            IRepository activityRepo = new ActivityRepository(context);
+
+            var activity = new UserActivity()
+            {
+                UserId = "userid",
+                Option = "old",
+                Payload = "heavy"
+            };
+            await activityRepo.AddAsync(activity);
+
+            UpdateResult result = await activityRepo.UpdateAsync(activity.Id, ac => ac.Option, "new");
+            UserActivity newActivity = await activityRepo.GetAsync(activity.Id);
+            
+            Assert.True(result.IsAcknowledged);
+            Assert.Equal("new", newActivity.Option);
+            Assert.Equal("heavy", newActivity.Payload);
+        }
     }
 }
