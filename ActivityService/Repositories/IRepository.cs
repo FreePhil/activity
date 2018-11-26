@@ -17,7 +17,7 @@ namespace ActivityService.Repositories
         Task<UserActivity> GetAsync(ObjectId id);
         Task<DeleteResult> DeleteAsync(ObjectId id);
         
-        Task<bool> UpdateOption(string id, string option);
+        Task<UpdateResult> UpdateOption(string id, string option);
         Task<bool> UpdatePayload(string id, string payload);
         Task<bool> UpdateStatus(string id, string status);
     }

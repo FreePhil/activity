@@ -39,14 +39,20 @@ namespace ActivityService.Repositories
             return Context.Activities.DeleteOneAsync(activity => activity.Id == id);
         }
 
-        public Task<bool> UpdateOption(string id, string option)
+        public Task<UpdateResult> UpdateOption(string id, string option)
         {
-            throw new NotImplementedException();
+            var objectId = ObjectId.Parse(id);
+            var update = Builders<UserActivity>.Update
+                .Set(ac => ac.Payload, option)
+                .Set(ac => ac.UpdatedAt, DateTime.UtcNow);
+ 
+            var updateOption = new UpdateOptions { IsUpsert = true };
+            return Context.Activities.UpdateOneAsync(ac => ac.Id == objectId, update, updateOption);
         }
 
-        public Task<bool> UpdatePayload(string id, string option)
+        public Task<bool> UpdatePayload(string id, string payload)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task<bool> UpdateStatus(string id, string status)
