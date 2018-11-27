@@ -6,7 +6,9 @@ namespace ActivityService.Models
 {
     public class UserActivity
     {
-        public ObjectId Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         
         public string UserId { get; set; }
         
@@ -19,7 +21,7 @@ namespace ActivityService.Models
         [BsonIgnore]
         public DateTime CreatedAt
         {
-            get { return Id.CreationTime;  }
+            get { return ObjectId.Parse(Id).CreationTime;  }
         }
     }
 }

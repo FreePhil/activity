@@ -19,7 +19,7 @@ namespace ActivityService.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserActivity>> Get(string id)
         {
-            var result = await Repository.GetAsync(ObjectId.Parse(id));
+            var result = await Repository.GetAsync(id);
             return result;
         }
     }

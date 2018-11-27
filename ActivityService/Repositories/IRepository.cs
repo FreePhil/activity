@@ -15,8 +15,8 @@ namespace ActivityService.Repositories
         Task<List<UserActivity>> GetAll(int pageNo, int pageSize);
 
         Task AddAsync(UserActivity activity);
-        Task<UserActivity> GetAsync(ObjectId id);
-        Task<DeleteResult> DeleteAsync(ObjectId id);
-        Task<UpdateResult> UpdateAsync(ObjectId id, Expression<Func<UserActivity, string>> updater, string value);
+        Task<UserActivity> GetAsync(string id);
+        Task<bool> DeleteAsync(string id);
+        Task<bool> UpdateAsync(string id, Expression<Func<UserActivity, string>> updater, string value);
     }
 }

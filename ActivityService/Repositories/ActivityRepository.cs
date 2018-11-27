@@ -30,22 +30,26 @@ namespace ActivityService.Repositories
             return Context.Activities.InsertOneAsync(activity);
         }
 
-        public Task<UserActivity> GetAsync(ObjectId id)
+        public Task<UserActivity> GetAsync(string id)
         {
             return Context.Activities.Find(activity => activity.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task<DeleteResult> DeleteAsync(ObjectId id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            return Context.Activities.DeleteOneAsync(activity => activity.Id == id);
+            var result = await Context.Activities.DeleteOneAsync(activity => activity.Id == id);
+
+            return result.IsAcknowledged;
         }
 
-        public Task<UpdateResult> UpdateAsync(ObjectId id, Expression<Func<UserActivity, string>> updater, string value)
+        public async Task<bool> UpdateAsync(string id, Expression<Func<UserActivity, string>> updater, string value)
         {
             var update = Builders<UserActivity>.Update
                 .Set(updater, value)
                 .Set(activity => activity.UpdatedAt, DateTime.UtcNow);
-            return Context.Activities.UpdateOneAsync(activity => activity.Id == id, update);
+            var result = await Context.Activities.UpdateOneAsync(activity => activity.Id == id, update);
+
+            return result.IsAcknowledged;
         }
     }
 }

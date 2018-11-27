@@ -40,9 +40,9 @@ namespace ConceptTest
             };
                
             await activityRepo.AddAsync(activity);
-            DeleteResult result = await activityRepo.DeleteAsync(activity.Id);
+            bool result = await activityRepo.DeleteAsync(activity.Id);
             
-            Assert.True(result.IsAcknowledged);
+            Assert.True(result);
         }
 
         [Fact]
@@ -59,10 +59,10 @@ namespace ConceptTest
             };
             await activityRepo.AddAsync(activity);
 
-            UpdateResult result = await activityRepo.UpdateAsync(activity.Id, ac => ac.Option, "new");
+            bool result = await activityRepo.UpdateAsync(activity.Id, ac => ac.Option, "new");
             UserActivity newActivity = await activityRepo.GetAsync(activity.Id);
             
-            Assert.True(result.IsAcknowledged);
+            Assert.True(result);
             Assert.Equal("new", newActivity.Option);
             Assert.Equal("heavy", newActivity.Payload);
         }
