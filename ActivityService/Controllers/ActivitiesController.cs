@@ -1,20 +1,24 @@
+using System;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using Newtonsoft.Json;
 
 namespace ActivityService.Controllers
 {
     [Route("api/activities")]
     [ApiController]
-    public class ActivitiesController
+    public class ActivitiesController: ControllerBase
     {
         public IRepository Repository { get; }
-        public ActivitiesController(IRepository repository)
+        public ActivitiesController()
         {
-            Repository = repository;
+//            Repository = repository;
         }
         
         [HttpGet("{id}")]
@@ -40,19 +44,40 @@ namespace ActivityService.Controllers
         }
         
         [HttpPost("{id}/payload")]
-        public async Task<ActionResult<bool>> UpdatePayload(string id, [FromBody] string payload)
+        [HttpPost("{id}/export")]
+        public async Task<ActionResult<string>> UpdatePayload(string id, [FromServices] IPayloadValidator validator)
         {
-            var result = await Repository.UpdateAsync(id, ac => ac.Payload, payload);
+            string callbackHref = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new { id = id })}";
 
-            return result;
+            string payloadString = await ReadFromBodyAsync();
+            dynamic payload = JsonConvert.DeserializeObject(payloadString);
+
+            if (!validator.IsValid())
+            {
+                return "blablabla...";
+            }
+
+            payload.callbackHref = callbackHref;
+            
+            return JsonConvert.SerializeObject(payload);
         }
         
-        [HttpPost("{id}/status")]
+        [HttpPost("{id}/status", Name = "status")]
         public async Task<ActionResult<bool>> UpdateStatus(string id, [FromBody] string status)
         {
             var result = await Repository.UpdateAsync(id, ac => ac.Status, status);
 
             return result;
+        }
+
+        private async Task<string> ReadFromBodyAsync()
+        {
+            string bodyString = string.Empty;
+            
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+            {  
+                return await reader.ReadToEndAsync();
+            }
         }
     }
 }
