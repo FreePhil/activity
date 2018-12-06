@@ -11,7 +11,7 @@ namespace ActivityService.Controllers
     {
         private ITopic topic;
         private IErrorLimit limit;
-        private IUserActivityService service;
+//        private IUserActivityService service;
         
         public NoticesController(ITopic topic, IErrorLimit limit)
         {
