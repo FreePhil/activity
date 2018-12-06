@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
         <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-        <!--<RuntimeFrameworkVersion>2.1.6</RuntimeFrameworkVersion>-->
     </PropertyGroup>
 
     <ItemGroup>
