@@ -16,9 +16,9 @@ namespace ActivityService.Controllers
     public class ActivitiesController: ControllerBase
     {
         public IRepository Repository { get; }
-        public ActivitiesController()
+        public ActivitiesController(IRepository repository)
         {
-//            Repository = repository;
+            Repository = repository;
         }
         
         [HttpGet("{id}")]

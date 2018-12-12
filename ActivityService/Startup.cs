@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using NJsonSchema;
 using NSwag.AspNetCore;
 using ActivityService.Injections;
+using ActivityService.Models;
 using Microsoft.AspNetCore.HttpOverrides;
 
 namespace ActivityService
@@ -36,6 +37,8 @@ namespace ActivityService
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
             services.AddSwaggerDocument();
+
+            services.AddMongoDb(Configuration);
             services.AddActivity();
         }
 
