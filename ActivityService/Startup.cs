@@ -54,7 +54,7 @@ namespace ActivityService
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
