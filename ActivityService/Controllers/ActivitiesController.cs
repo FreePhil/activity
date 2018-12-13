@@ -12,8 +12,7 @@ using Newtonsoft.Json;
 namespace ActivityService.Controllers
 {
     [Route("api/activities")]
-    [ApiController]
-    public class ActivitiesController: ControllerBase
+    public class ActivitiesController: Controller
     {
         public IRepository Repository { get; }
         public ActivitiesController(IRepository repository)

@@ -16,7 +16,9 @@ using NSwag.AspNetCore;
 using ActivityService.Injections;
 using ActivityService.Models;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Routing;
 
+[assembly: ApiController]
 namespace ActivityService
 {
     public class Startup
@@ -31,7 +33,10 @@ namespace ActivityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;

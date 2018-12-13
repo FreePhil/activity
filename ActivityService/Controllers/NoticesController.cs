@@ -6,8 +6,7 @@ using Newtonsoft.Json;
 namespace ActivityService.Controllers
 {
     [Route("api/notices")]
-    [ApiController]
-    public class NoticesController: ControllerBase
+    public class NoticesController: Controller
     {
         private ITopic topic;
         private IErrorLimit limit;
