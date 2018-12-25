@@ -12,7 +12,7 @@ namespace ActivityService.Repositories
     {
         IContext Context { get; }
         
-        Task<List<UserActivity>> GetAll(int pageNo, int pageSize);
+        Task<List<UserActivity>> GetAllAsync(int pageNo, int pageSize);
 
         Task AddAsync(UserActivity activity);
         Task<UserActivity> GetAsync(string id);

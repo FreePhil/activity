@@ -1,7 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using ActivityService.Injections;
 using ActivityService.Models;
 using ActivityService.Repositories;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using NSwag;
@@ -12,11 +15,24 @@ namespace ConceptTest
 {
     public class MongoModelTest
     {
+        private ServiceProvider Injector { get; }
+        public MongoModelTest()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings.json");
+            IConfiguration configuration = configurationBuilder.Build();
+            
+            var services = new ServiceCollection();
+            services.AddMongoDb(configuration);
+            services.AddActivity();
+            
+            Injector = services.BuildServiceProvider();
+        }
+        
         [Fact]
         public async Task SaveActivity()
         {
-            IContext context = new ActivityContext();
-            IRepository activityRepo = new ActivityRepository(context);
+            IRepository activityRepo = Injector.GetService<IRepository>();
 
             var activity = new UserActivity()
             {
@@ -33,8 +49,7 @@ namespace ConceptTest
         [Fact]
         public async Task DeleteActivity()
         {
-            IContext context = new ActivityContext();
-            IRepository activityRepo = new ActivityRepository(context);
+            IRepository activityRepo = Injector.GetService<IRepository>();
 
             var activity = new UserActivity()
             {
@@ -50,8 +65,7 @@ namespace ConceptTest
         [Fact]
         public async Task UpdateOptionOfActivity()
         {
-            IContext context = new ActivityContext();
-            IRepository activityRepo = new ActivityRepository(context);
+            IRepository activityRepo = Injector.GetService<IRepository>();
             DummyPayload payload = new DummyPayload()
             {
                 Id = 10,

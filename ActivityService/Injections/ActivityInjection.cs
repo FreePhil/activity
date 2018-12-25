@@ -10,17 +10,14 @@ namespace ActivityService.Injections
     {
         public static IServiceCollection AddActivity(this IServiceCollection services)
         {
-            //services.AddSingleton<IBus>(RabbitHutch.CreateBus("host=localhost"));
-            //services.AddSingleton<ITopic, Topic>();
             services.AddScoped<IContext, ActivityContext>(provider =>
             {
                 var optionAccessor = provider.GetService<IOptionsMonitor<MongoDbOptions>>();
                 var options = optionAccessor.CurrentValue;
+                
+                Log.Information("Obtaining database {host}//{database}", options.Hosts, options.Database);
 
                 var client = provider.GetService<MongoClient>();
-
-                Log.Information("Obtaining database {database}", options.Database);
-
                 var database = client.GetDatabase(options.Database);
 
                 return new ActivityContext(database);

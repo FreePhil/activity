@@ -19,7 +19,6 @@ namespace ActivityService.Injections
             {
                 var optionAccessor = provider.GetService<IOptionsMonitor<MongoDbOptions>>();
                 var options = optionAccessor.CurrentValue;
-
                 var connectionString = $"mongodb://{options.Hosts}";
 
                 Log.Information("Creating MongoClient using connection string: {connectionString}", connectionString);

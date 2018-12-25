@@ -12,14 +12,13 @@ namespace ActivityService.Repositories
 {
     public class ActivityRepository: IRepository
     {
+        public IContext Context { get; }
         public ActivityRepository(IContext context)
         {
             this.Context = context;
         }
         
-        public IContext Context { get; }
-        
-        public Task<List<UserActivity>> GetAll(int pageNo, int pageSize)
+        public Task<List<UserActivity>> GetAllAsync(int pageNo, int pageSize)
         {
             return Context.Activities.Find(_ => true).ToListAsync();
         }
