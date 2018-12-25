@@ -15,7 +15,7 @@ namespace ActivityService.Injections
                 var optionAccessor = provider.GetService<IOptionsMonitor<MongoDbOptions>>();
                 var options = optionAccessor.CurrentValue;
                 
-                Log.Information("Obtaining database {host}//{database}", options.Hosts, options.Database);
+                Log.Information("Obtaining database {host}:{database}", options.Hosts, options.Database);
 
                 var client = provider.GetService<MongoClient>();
                 var database = client.GetDatabase(options.Database);
