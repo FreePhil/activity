@@ -20,23 +20,23 @@ namespace ActivityService.Repositories
         
         public Task<List<UserActivity>> GetAllAsync(int pageNo, int pageSize)
         {
-            return Context.Activities.Find(_ => true).ToListAsync();
+            return Context.GetCollection<UserActivity>().Find(_ => true).ToListAsync();
         }
 
         public Task AddAsync(UserActivity activity)
         {
             activity.UpdatedAt = DateTime.UtcNow;
-            return Context.Activities.InsertOneAsync(activity);
+            return Context.GetCollection<UserActivity>().InsertOneAsync(activity);
         }
 
         public Task<UserActivity> GetAsync(string id)
         {
-            return Context.Activities.Find(activity => activity.Id == id).FirstOrDefaultAsync();
+            return Context.GetCollection<UserActivity>().Find(activity => activity.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var result = await Context.Activities.DeleteOneAsync(activity => activity.Id == id);
+            var result = await Context.GetCollection<UserActivity>().DeleteOneAsync(activity => activity.Id == id);
 
             return result.IsAcknowledged;
         }
@@ -46,7 +46,7 @@ namespace ActivityService.Repositories
             var update = Builders<UserActivity>.Update
                 .Set(updater, value)
                 .Set(activity => activity.UpdatedAt, DateTime.UtcNow);
-            var result = await Context.Activities.UpdateOneAsync(activity => activity.Id == id, update);
+            var result = await Context.GetCollection<UserActivity>().UpdateOneAsync(activity => activity.Id == id, update);
 
             return result.IsAcknowledged;
         }
