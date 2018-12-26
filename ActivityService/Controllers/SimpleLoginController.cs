@@ -17,7 +17,7 @@ namespace ActivityService.Controllers
         }
         
         [HttpPost]
-        public async Task<ActionResult<string>> Add([FromBody] string userLoginName)
+        public async Task<ActionResult<string>> Login([FromBody] string userLoginName)
         {
             return String.Empty;
         }
