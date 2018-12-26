@@ -1,3 +1,4 @@
+using System;
 using ActivityService.Models;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace ActivityService.Controllers
 {
+    [Obsolete("Notify feature will be implemented by TestExport projects")]
     [Route("api/notices")]
     public class NoticesController: Controller
     {
