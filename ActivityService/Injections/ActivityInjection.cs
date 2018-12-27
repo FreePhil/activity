@@ -1,7 +1,13 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using ActivityService.Models;
 using ActivityService.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using RabbitMQ.Client.Exceptions;
 using Serilog;
 
 namespace ActivityService.Injections
@@ -12,6 +18,7 @@ namespace ActivityService.Injections
         {
             services.AddScoped<IContext, ActivityContext>(provider =>
             {
+                var mapper = provider.GetService<IDictionary<Type, string>>();
                 var optionAccessor = provider.GetService<IOptionsMonitor<MongoDbOptions>>();
                 var options = optionAccessor.CurrentValue;
                 
@@ -20,7 +27,7 @@ namespace ActivityService.Injections
                 var client = provider.GetService<MongoClient>();
                 var database = client.GetDatabase(options.Database);
 
-                return new ActivityContext(database);
+                return new ActivityContext(database, mapper);
             });
 
             services.AddScoped<IRepository, ActivityRepository>();
