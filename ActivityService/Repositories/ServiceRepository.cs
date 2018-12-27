@@ -25,7 +25,6 @@ namespace ActivityService.Repositories
 
         public Task AddAsync(T entity)
         {
-            entity.UpdatedAt = DateTime.UtcNow;
             return Context.GetCollection<T>().InsertOneAsync(entity);
         }
 

@@ -32,8 +32,8 @@ namespace ConceptTest
         [Fact]
         public async Task SaveActivity()
         {
-            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
-
+//            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
+            IUserActivityRepository activityRepo = Injector.GetService<IUserActivityRepository>();
             var activity = new UserActivity()
             {
                 UserId = "userid",
@@ -44,6 +44,28 @@ namespace ConceptTest
             var activityFromMongo = await activityRepo.GetAsync(activity.Id);
             
             Assert.Equal("userid", activityFromMongo.UserId);
+        }
+        
+        [Fact]
+        public async Task SortByIdForUser()
+        {
+//            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
+            IUserActivityRepository activityRepo = Injector.GetService<IUserActivityRepository>();
+            UserActivity activity;
+            for (int i = 0; i < 3; i++)
+            {
+                activity = new UserActivity()
+                {
+                    UserId = "userid",
+                    Payload = i.ToString(),
+                    UpdatedAt = DateTime.UtcNow
+                };
+                await activityRepo.AddAsync(activity);
+            }
+            
+            var activityFromMongo = await activityRepo.GetByUserAsync("userid");
+            
+            Assert.Equal(3, activityFromMongo.Count);
         }
 
         [Fact]

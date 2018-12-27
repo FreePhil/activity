@@ -16,12 +16,13 @@ namespace ActivityService.Models
         public string Payload { get; set; }
         public string Status { get; set; }
         
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime UpdatedAt { get; set; } 
         
         [BsonIgnore]
         public DateTime CreatedAt
         {
-            get { return ObjectId.Parse(Id).CreationTime;  }
+            get { return ObjectId.Parse(Id).CreationTime.ToLocalTime();  }
         }
     }
 }

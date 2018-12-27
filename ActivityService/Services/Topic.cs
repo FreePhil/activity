@@ -1,7 +1,9 @@
+using System;
 using EasyNetQ;
 
 namespace ActivityService.Services
 {
+    [Obsolete("Will move to test export module")]
     public class Topic: ITopic
     {
         public Topic(IBus bus)

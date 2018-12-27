@@ -31,7 +31,7 @@ namespace ActivityService.Injections
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(ServiceRepository<>));
-
+            services.AddScoped<IUserActivityRepository, UserActivityRepository>();
             return services;
         }
     }
