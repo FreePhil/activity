@@ -10,8 +10,8 @@ namespace ActivityService.Controllers
     [Route("api/login")]
     public class SimpleLoginController: Controller
     {
-        public IRepository Repository { get; }
-        public SimpleLoginController(IRepository repository)
+        public IRepository<SimpleUser> Repository { get; }
+        public SimpleLoginController(IRepository<SimpleUser> repository)
         {
             Repository = repository;
         }

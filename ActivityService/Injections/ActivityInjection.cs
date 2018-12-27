@@ -16,7 +16,7 @@ namespace ActivityService.Injections
     {
         public static IServiceCollection AddActivity(this IServiceCollection services)
         {
-            services.AddScoped<IContext, ActivityContext>(provider =>
+            services.AddScoped<IContext, ServiceContext>(provider =>
             {
                 var mapper = provider.GetService<IDictionary<Type, string>>();
                 var optionAccessor = provider.GetService<IOptionsMonitor<MongoDbOptions>>();
@@ -27,10 +27,10 @@ namespace ActivityService.Injections
                 var client = provider.GetService<MongoClient>();
                 var database = client.GetDatabase(options.Database);
 
-                return new ActivityContext(database, mapper);
+                return new ServiceContext(database, mapper);
             });
 
-            services.AddScoped<IRepository, ActivityRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(ServiceRepository<>));
 
             return services;
         }

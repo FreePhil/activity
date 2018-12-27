@@ -6,11 +6,11 @@ using MongoDB.Driver;
 
 namespace ActivityService.Repositories
 {
-    public class ActivityContext: IContext
+    public class ServiceContext: IContext
     {
         public IMongoDatabase Database { get; }
         public IDictionary<Type, string> Mapper { get; }
-        public ActivityContext(IMongoDatabase database, IDictionary<Type, string> mapper)
+        public ServiceContext(IMongoDatabase database, IDictionary<Type, string> mapper)
         {
             Database = database;
             Mapper = mapper;

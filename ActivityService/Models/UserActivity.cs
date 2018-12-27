@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ActivityService.Models
 {
-    public class UserActivity
+    public class UserActivity: IServiceEntity
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

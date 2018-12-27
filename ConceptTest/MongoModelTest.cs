@@ -32,7 +32,7 @@ namespace ConceptTest
         [Fact]
         public async Task SaveActivity()
         {
-            IRepository activityRepo = Injector.GetService<IRepository>();
+            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
 
             var activity = new UserActivity()
             {
@@ -49,7 +49,7 @@ namespace ConceptTest
         [Fact]
         public async Task DeleteActivity()
         {
-            IRepository activityRepo = Injector.GetService<IRepository>();
+            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
 
             var activity = new UserActivity()
             {
@@ -65,7 +65,7 @@ namespace ConceptTest
         [Fact]
         public async Task UpdateOptionOfActivity()
         {
-            IRepository activityRepo = Injector.GetService<IRepository>();
+            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
             DummyPayload payload = new DummyPayload()
             {
                 Id = 10,

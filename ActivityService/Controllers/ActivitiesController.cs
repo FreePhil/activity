@@ -14,8 +14,8 @@ namespace ActivityService.Controllers
     [Route("api/activities")]
     public class ActivitiesController: Controller
     {
-        public IRepository Repository { get; }
-        public ActivitiesController(IRepository repository)
+        public IRepository<UserActivity> Repository { get; }
+        public ActivitiesController(IRepository<UserActivity> repository)
         {
             Repository = repository;
         }

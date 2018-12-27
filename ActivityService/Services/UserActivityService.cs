@@ -6,8 +6,8 @@ namespace ActivityService.Services
 {
     public class UserActivityService: IUserActivityService
     {
-        private IRepository Repository { get; }
-        public UserActivityService(IRepository repository)
+        private IRepository<UserActivity> Repository { get; }
+        public UserActivityService(IRepository<UserActivity> repository)
         {
             Repository = repository;
         }

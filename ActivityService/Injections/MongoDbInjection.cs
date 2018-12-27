@@ -39,7 +39,15 @@ namespace ActivityService.Injections
                 IDictionary<Type, string> typeCollectionMapper = new Dictionary<Type, string>();
                 options.Collection.ToList().ForEach(pair =>
                 {
-                    typeCollectionMapper.Add(Type.GetType(pair.FullTypeName), pair.CollectionName);
+                    try
+                    {
+                        typeCollectionMapper.Add(Type.GetType(pair.FullTypeName), pair.CollectionName);
+                        Log.Information("Maping type {TypeName} to collection '{Collection}'", pair.FullTypeName, pair.CollectionName);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error("Failed to convert type {TypeName} to {Collection}, {Message}", pair.FullTypeName, pair.CollectionName, e.Message);
+                    }
                 });
 
                 return typeCollectionMapper;
