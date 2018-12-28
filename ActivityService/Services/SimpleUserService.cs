@@ -1,19 +1,32 @@
+using System;
+using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Repositories;
 
 namespace ActivityService.Services
 {
-    public class SimpleUserService: ServiceRepository<SimpleUser>, ISimpleUserRepository
+    public class SimpleUserService: ISimpleUserService
     {
-        public IRepository<SimpleUser> Repository { get; }
-        public SimpleUserService(IRepository<SimpleUser> repository)
+        private ISimpleUserRepository Repository { get; }
+        public SimpleUserService(ISimpleUserRepository repository)
         {
             Repository = repository;
         }
 
-        public string Login(string userName)
+        public async Task<SimpleUser> LoginAsync(string userName)
         {
-            Repository.GetAsync(userName);
+            SimpleUser user;
+            try
+            {
+                user = await Repository.GetByUserNameAsync(userName);
+            }
+            catch (Exception e)
+            {
+                user = new SimpleUser {Name = userName};
+                Repository.AddAsync(user);
+            }
+
+            return user;
         }
     }
 }

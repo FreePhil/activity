@@ -2,10 +2,11 @@ using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Repositories;
 
-namespace ActivityService.Services
+namespace ActivityService.Repositories
 {
     public interface ISimpleUserRepository: IRepository<SimpleUser>
     {
-        Task<SimpleUser> GetByUserName(string userName);
+        Task<SimpleUser> GetByUserNameAsync(string userName);
+        Task<SimpleUser> AddAsync(string userName);
     }
 }

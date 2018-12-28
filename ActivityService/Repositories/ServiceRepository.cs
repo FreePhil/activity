@@ -12,7 +12,7 @@ namespace ActivityService.Repositories
 {
     public class ServiceRepository<T>: IRepository<T> where T: IServiceEntity
     {
-        public IContext Context { get; }
+        protected IContext Context { get; }
         public ServiceRepository(IContext context)
         {
             Context = context;

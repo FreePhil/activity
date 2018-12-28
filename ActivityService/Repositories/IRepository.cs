@@ -10,8 +10,6 @@ namespace ActivityService.Repositories
 {
     public interface IRepository<T>
     {
-        IContext Context { get; }
-        
         Task<List<T>> GetAllAsync(int pageNo, int pageSize);
 
         Task AddAsync(T entity);

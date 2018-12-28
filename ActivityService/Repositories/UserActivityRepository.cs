@@ -7,10 +7,8 @@ namespace ActivityService.Repositories
 {
     public class UserActivityRepository: ServiceRepository<UserActivity>, IUserActivityRepository
     {
-        public IContext Context { get; }
         public UserActivityRepository(IContext context): base(context)
         {
-            Context = context;
         }
 
         public Task<List<UserActivity>> GetByUserAsync(string userId)
