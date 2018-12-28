@@ -50,21 +50,12 @@ namespace ConceptTest
         public async Task SortByIdForUser()
         {
             IUserActivityRepository activityRepo = Injector.GetService<IUserActivityRepository>();
-            UserActivity activity;
-            for (int i = 0; i < 3; i++)
+            var activitiesFromMongo = await activityRepo.GetByUserAsync("userid");
+
+            for (int i = 0; i < activitiesFromMongo.Count - 1; i++)
             {
-                activity = new UserActivity()
-                {
-                    UserId = "userid",
-                    Payload = i.ToString(),
-                    UpdatedAt = DateTime.UtcNow
-                };
-                await activityRepo.AddAsync(activity);
+                Assert.True(activitiesFromMongo[i].CreatedAt >= activitiesFromMongo[i+1].CreatedAt);
             }
-            
-            var activityFromMongo = await activityRepo.GetByUserAsync("userid");
-            
-            Assert.Equal(3, activityFromMongo.Count);
         }
 
         [Fact]

@@ -48,13 +48,21 @@ namespace ActivityService
             services.AddActivity();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        private void CheckOrBuildIndexes(IApplicationBuilder app)
         {
             // make sure to create user index for login
             //
+            IUserActivityRepository activityRepository = app.ApplicationServices.GetService<IUserActivityRepository>();
+            activityRepository.CreateIndex();
+            
             ISimpleUserRepository userRepository = app.ApplicationServices.GetService<ISimpleUserRepository>();
-            userRepository.CreateIndex();
+            userRepository.CreateIndex();    
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            CheckOrBuildIndexes(app);
             
             if (env.IsDevelopment())
             {

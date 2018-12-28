@@ -17,7 +17,7 @@ namespace ActivityService.Repositories
             var indexOption = new CreateIndexOptions {Unique = true};
             var indexModel = new CreateIndexModel<SimpleUser>(indexBuilder.Ascending(u => u.Name), indexOption);
             
-            var indexName = Context.GetCollection<SimpleUser>().Indexes.CreateOne(indexModel);
+            Context.GetCollection<SimpleUser>().Indexes.CreateOne(indexModel);
         }
 
         public async Task<SimpleUser> GetByUserNameAsync(string userName)

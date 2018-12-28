@@ -6,6 +6,7 @@ namespace ActivityService.Repositories
 {
     public interface IUserActivityRepository: IRepository<UserActivity>
     {
+        void CreateIndex();
         Task<List<UserActivity>> GetByUserAsync(string userId);    
     }
 }
