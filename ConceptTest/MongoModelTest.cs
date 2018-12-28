@@ -1,7 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using ActivityService.Injections;
 using ActivityService.Models;
 using ActivityService.Repositories;
+using ActivityService.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using NSwag;
@@ -12,12 +16,24 @@ namespace ConceptTest
 {
     public class MongoModelTest
     {
+        private ServiceProvider Injector { get; }
+        public MongoModelTest()
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings.json");
+            IConfiguration configuration = configurationBuilder.Build();
+            
+            var services = new ServiceCollection();
+            services.AddMongoDb(configuration);
+            services.AddActivity();
+            
+            Injector = services.BuildServiceProvider();
+        }
+        
         [Fact]
         public async Task SaveActivity()
         {
-            IContext context = new ActivityContext();
-            IRepository activityRepo = new ActivityRepository(context);
-
+            IUserActivityRepository activityRepo = Injector.GetService<IUserActivityRepository>();
             var activity = new UserActivity()
             {
                 UserId = "userid",
@@ -29,12 +45,23 @@ namespace ConceptTest
             
             Assert.Equal("userid", activityFromMongo.UserId);
         }
+        
+        [Fact]
+        public async Task SortByIdForUser()
+        {
+            IUserActivityRepository activityRepo = Injector.GetService<IUserActivityRepository>();
+            var activitiesFromMongo = await activityRepo.GetByUserAsync("userid");
+
+            for (int i = 0; i < activitiesFromMongo.Count - 1; i++)
+            {
+                Assert.True(activitiesFromMongo[i].CreatedAt >= activitiesFromMongo[i+1].CreatedAt);
+            }
+        }
 
         [Fact]
         public async Task DeleteActivity()
         {
-            IContext context = new ActivityContext();
-            IRepository activityRepo = new ActivityRepository(context);
+            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
 
             var activity = new UserActivity()
             {
@@ -50,8 +77,7 @@ namespace ConceptTest
         [Fact]
         public async Task UpdateOptionOfActivity()
         {
-            IContext context = new ActivityContext();
-            IRepository activityRepo = new ActivityRepository(context);
+            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
             DummyPayload payload = new DummyPayload()
             {
                 Id = 10,
@@ -77,6 +103,30 @@ namespace ConceptTest
             
             Assert.Equal(10, newPayload.Id);
             Assert.Equal("value", newPayload.Value);
+        }
+
+        [Fact]
+        public async Task LoginExistingUserTest()
+        {
+            ISimpleUserService service = Injector.GetService<ISimpleUserService>();
+
+            SimpleUser user = await service.LoginAsync("phil");
+            
+            Assert.Equal("5c2593550bf9a605288b2967", user.Id);
+        }
+
+        [Fact]
+        public async Task LoginNonExistingUserTest()
+        {
+            ISimpleUserRepository repository = Injector.GetService<ISimpleUserRepository>();
+            ISimpleUserService service = Injector.GetService<ISimpleUserService>();
+
+            SimpleUser user = await service.LoginAsync("tom");
+            
+            Assert.NotNull(user.Id);
+            Assert.Equal("tom", user.Name);
+
+            await repository.DeleteAsync(user.Id);
         }
     }
 }

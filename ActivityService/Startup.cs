@@ -14,8 +14,12 @@ using Microsoft.Extensions.Options;
 using NJsonSchema;
 using NSwag.AspNetCore;
 using ActivityService.Injections;
+using ActivityService.Models;
+using ActivityService.Repositories;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Routing;
 
+[assembly: ApiController]
 namespace ActivityService
 {
     public class Startup
@@ -30,18 +34,36 @@ namespace ActivityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
             services.AddSwaggerDocument();
+
+            services.AddMongoDb(Configuration);
             services.AddActivity();
+        }
+
+        private void CheckOrBuildIndexes(IApplicationBuilder app)
+        {
+            // make sure to create user index for login
+            //
+            IUserActivityRepository activityRepository = app.ApplicationServices.GetService<IUserActivityRepository>();
+            activityRepository.CreateIndex();
+            
+            ISimpleUserRepository userRepository = app.ApplicationServices.GetService<ISimpleUserRepository>();
+            userRepository.CreateIndex();    
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            CheckOrBuildIndexes(app);
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

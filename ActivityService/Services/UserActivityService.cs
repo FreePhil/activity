@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Repositories;
@@ -6,10 +8,19 @@ namespace ActivityService.Services
 {
     public class UserActivityService: IUserActivityService
     {
-        private IRepository Repository { get; }
-        public UserActivityService(IRepository repository)
+        private IUserActivityRepository Repository { get; }
+        public UserActivityService(IUserActivityRepository repository)
         {
             Repository = repository;
+        }
+
+        public Task<List<UserActivity>> GetActivities(string userId)
+        {
+            if ((userId == null) || (userId == String.Empty))
+            {
+                return Task.FromResult(new List<UserActivity>());
+            }
+            return Repository.GetByUserAsync(userId);
         }
 
         public Task<UserActivity> GetActivity(string id)

@@ -8,15 +8,13 @@ using MongoDB.Driver;
 
 namespace ActivityService.Repositories
 {
-    public interface IRepository
+    public interface IRepository<T>
     {
-        IContext Context { get; }
-        
-        Task<List<UserActivity>> GetAll(int pageNo, int pageSize);
+        Task<List<T>> GetAllAsync(int pageNo, int pageSize);
 
-        Task AddAsync(UserActivity activity);
-        Task<UserActivity> GetAsync(string id);
+        Task AddAsync(T entity);
+        Task<T> GetAsync(string id);
         Task<bool> DeleteAsync(string id);
-        Task<bool> UpdateAsync(string id, Expression<Func<UserActivity, string>> updater, string value);
+        Task<bool> UpdateAsync(string id, Expression<Func<T, string>> updater, string value);
     }
 }
