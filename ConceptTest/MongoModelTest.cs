@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ActivityService.Injections;
 using ActivityService.Models;
 using ActivityService.Repositories;
+using ActivityService.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.IO;
@@ -32,7 +33,6 @@ namespace ConceptTest
         [Fact]
         public async Task SaveActivity()
         {
-//            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
             IUserActivityRepository activityRepo = Injector.GetService<IUserActivityRepository>();
             var activity = new UserActivity()
             {
@@ -49,7 +49,6 @@ namespace ConceptTest
         [Fact]
         public async Task SortByIdForUser()
         {
-//            IRepository<UserActivity> activityRepo = Injector.GetService<IRepository<UserActivity>>();
             IUserActivityRepository activityRepo = Injector.GetService<IUserActivityRepository>();
             UserActivity activity;
             for (int i = 0; i < 3; i++)
@@ -113,6 +112,17 @@ namespace ConceptTest
             
             Assert.Equal(10, newPayload.Id);
             Assert.Equal("value", newPayload.Value);
+        }
+
+        [Fact]
+        public async Task LoginTest()
+        {
+            ISimpleUserService service = Injector.GetService<ISimpleUserService>();
+
+            SimpleUser user = await service.LoginAsync("phil");
+            
+            Assert.NotNull(user.Id);
+            Assert.Equal("phil", user.Name);
         }
     }
 }

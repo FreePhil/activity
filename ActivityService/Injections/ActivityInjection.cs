@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ActivityService.Models;
 using ActivityService.Repositories;
+using ActivityService.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -32,6 +33,10 @@ namespace ActivityService.Injections
 
             services.AddScoped(typeof(IRepository<>), typeof(ServiceRepository<>));
             services.AddScoped<IUserActivityRepository, UserActivityRepository>();
+            services.AddScoped<ISimpleUserRepository, SimpleUserRepository>();
+            services.AddScoped<ISimpleUserService, SimpleUserService>();
+            services.AddScoped<IUserActivityService, UserActivityService>();
+            
             return services;
         }
     }

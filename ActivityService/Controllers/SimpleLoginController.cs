@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Repositories;
+using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityService.Controllers
@@ -10,16 +11,17 @@ namespace ActivityService.Controllers
     [Route("api/login")]
     public class SimpleLoginController: Controller
     {
-        public IRepository<SimpleUser> Repository { get; }
-        public SimpleLoginController(IRepository<SimpleUser> repository)
+        public ISimpleUserService Service { get; }
+        public SimpleLoginController(ISimpleUserService service)
         {
-            Repository = repository;
+            Service = service;
         }
         
         [HttpPost]
-        public async Task<ActionResult<string>> Login([FromBody] string userLoginName)
+        public async Task<ActionResult<string>> Login([FromBody] string userName)
         {
-            return String.Empty;
+            SimpleUser user = await Service.LoginAsync(userName);
+            return user.Id;
         }
     }
 }
