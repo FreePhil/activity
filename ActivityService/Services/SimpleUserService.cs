@@ -21,7 +21,7 @@ namespace ActivityService.Services
             {
                 user = await Repository.GetByUserNameAsync(userName);
             }
-            catch (KeyNotFoundException e)
+            catch (InvalidOperationException)
             {
                 user = new SimpleUser {Name = userName};
                 await Repository.AddAsync(user);
