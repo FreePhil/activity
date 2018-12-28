@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
 
@@ -11,5 +12,7 @@ namespace ActivityService.Services
         Task<bool> UpdatePayload(string id, string payload);
         Task<bool> UpdateOption(string id, string option);
         Task<bool> UpdateStatus(string id, string status);
+
+        Task<IList<UserActivity>> GetByUserAsync(string userId);
     }
 }

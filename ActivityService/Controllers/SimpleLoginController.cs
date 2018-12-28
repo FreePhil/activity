@@ -17,7 +17,7 @@ namespace ActivityService.Controllers
         }
         
         [HttpPost]
-        public async Task<ActionResult<string>> Login([FromBody] string userName)
+        public async Task<ActionResult<string>> Login([FromForm] string userName)
         {
             SimpleUser user = await Service.LoginAsync(userName);
             return user.Id;

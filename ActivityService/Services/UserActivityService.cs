@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -12,15 +11,6 @@ namespace ActivityService.Services
         public UserActivityService(IUserActivityRepository repository)
         {
             Repository = repository;
-        }
-
-        public Task<List<UserActivity>> GetActivities(string userId)
-        {
-            if ((userId == null) || (userId == String.Empty))
-            {
-                return Task.FromResult(new List<UserActivity>());
-            }
-            return Repository.GetByUserAsync(userId);
         }
 
         public Task<UserActivity> GetActivity(string id)
@@ -46,6 +36,12 @@ namespace ActivityService.Services
         public Task<bool> UpdateStatus(string id, string status)
         {
             return Repository.UpdateAsync(id, ac => ac.Status, status);
+        }
+
+        public async Task<IList<UserActivity>> GetByUserAsync(string userId)
+        {
+            var activities = await Repository.GetByUserAsync(userId);
+            return activities;
         }
     }
 }

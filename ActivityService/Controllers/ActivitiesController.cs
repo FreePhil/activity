@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,11 @@ namespace ActivityService.Controllers
     public class ActivitiesController: Controller
     {
         public IRepository<UserActivity> Repository { get; }
-        public ActivitiesController(IRepository<UserActivity> repository)
+        public IUserActivityService Service { get; }
+        public ActivitiesController(IRepository<UserActivity> repository, IUserActivityService service)
         {
             Repository = repository;
+            Service = service;
         }
         
         [HttpGet("{id}")]
@@ -23,6 +26,13 @@ namespace ActivityService.Controllers
         {
             var result = await Repository.GetAsync(id);
             return result;
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
+        {
+            var activities = await Service.GetByUserAsync(userId);
+            return Ok(activities);
         }
 
         [HttpPost]

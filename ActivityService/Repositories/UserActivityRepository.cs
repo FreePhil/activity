@@ -19,12 +19,13 @@ namespace ActivityService.Repositories
             Context.GetCollection<UserActivity>().Indexes.CreateOne(indexModel);
         }
 
-        public Task<List<UserActivity>> GetByUserAsync(string userId)
+        public async Task<IList<UserActivity>> GetByUserAsync(string userId)
         {
-            return Context.GetCollection<UserActivity>().
+            var activities = await Context.GetCollection<UserActivity>().
                 Find(u => u.UserId == userId).
                 SortByDescending(u => u.Id).
                 ToListAsync();
+            return activities;
         }
     }
 }
