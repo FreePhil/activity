@@ -115,14 +115,27 @@ namespace ConceptTest
         }
 
         [Fact]
-        public async Task LoginTest()
+        public async Task LoginExistingUserTest()
         {
             ISimpleUserService service = Injector.GetService<ISimpleUserService>();
 
             SimpleUser user = await service.LoginAsync("phil");
             
+            Assert.Equal("5c2593550bf9a605288b2967", user.Id);
+        }
+
+        [Fact]
+        public async Task LoginNonExistingUserTest()
+        {
+            ISimpleUserRepository repository = Injector.GetService<ISimpleUserRepository>();
+            ISimpleUserService service = Injector.GetService<ISimpleUserService>();
+
+            SimpleUser user = await service.LoginAsync("tom");
+            
             Assert.NotNull(user.Id);
-            Assert.Equal("phil", user.Name);
+            Assert.Equal("tom", user.Name);
+
+            await repository.DeleteAsync(user.Id);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Repositories;
@@ -20,10 +21,10 @@ namespace ActivityService.Services
             {
                 user = await Repository.GetByUserNameAsync(userName);
             }
-            catch (Exception e)
+            catch (KeyNotFoundException e)
             {
                 user = new SimpleUser {Name = userName};
-                Repository.AddAsync(user);
+                await Repository.AddAsync(user);
             }
 
             return user;

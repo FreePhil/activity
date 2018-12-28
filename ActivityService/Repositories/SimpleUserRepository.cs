@@ -11,6 +11,15 @@ namespace ActivityService.Repositories
         {
         }
 
+        public void CreateIndex()
+        {
+            var indexBuilder = Builders<SimpleUser>.IndexKeys;
+            var indexOption = new CreateIndexOptions {Unique = true};
+            var indexModel = new CreateIndexModel<SimpleUser>(indexBuilder.Ascending(u => u.Name), indexOption);
+            
+            var indexName = Context.GetCollection<SimpleUser>().Indexes.CreateOne(indexModel);
+        }
+
         public async Task<SimpleUser> GetByUserNameAsync(string userName)
         {
             var user = await Context.GetCollection<SimpleUser>().Find(u => u.Name == userName).SingleAsync();
