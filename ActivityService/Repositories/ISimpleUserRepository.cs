@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using ActivityService.Models;
-using ActivityService.Repositories;
 
 namespace ActivityService.Repositories
 {

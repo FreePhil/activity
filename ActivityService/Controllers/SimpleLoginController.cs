@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using ActivityService.Models;
-using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
 

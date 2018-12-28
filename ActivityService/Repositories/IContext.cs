@@ -1,4 +1,3 @@
-using ActivityService.Models;
 using MongoDB.Driver;
 
 namespace ActivityService.Repositories

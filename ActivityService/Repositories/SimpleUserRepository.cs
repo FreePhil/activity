@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using MongoDB.Driver;

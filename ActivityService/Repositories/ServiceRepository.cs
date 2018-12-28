@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ActivityService.Models;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ActivityService.Repositories

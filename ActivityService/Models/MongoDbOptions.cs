@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using ActivityService.Models;
-
+﻿
 namespace ActivityService.Repositories
 {
     public class MongoDbOptions

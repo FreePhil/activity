@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using ActivityService.Models;
 using MongoDB.Driver;
 
 namespace ActivityService.Repositories

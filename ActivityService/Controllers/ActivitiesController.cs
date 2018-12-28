@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,7 +5,6 @@ using ActivityService.Models;
 using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using Newtonsoft.Json;
 
 namespace ActivityService.Controllers
@@ -46,7 +44,7 @@ namespace ActivityService.Controllers
         [HttpPost("{id}/export")]
         public async Task<ActionResult<string>> UpdatePayload(string id, [FromServices] IPayloadValidator validator)
         {
-            string callbackHref = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new { id = id })}";
+            string callbackHref = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new {id })}";
 
             string payloadString = await ReadFromBodyAsync();
             dynamic payload = JsonConvert.DeserializeObject(payloadString);
@@ -71,8 +69,6 @@ namespace ActivityService.Controllers
 
         private async Task<string> ReadFromBodyAsync()
         {
-            string bodyString = string.Empty;
-            
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
             {  
                 return await reader.ReadToEndAsync();

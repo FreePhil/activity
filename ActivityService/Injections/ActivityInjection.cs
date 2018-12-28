@@ -1,14 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using ActivityService.Models;
 using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using RabbitMQ.Client.Exceptions;
 using Serilog;
 
 namespace ActivityService.Injections
