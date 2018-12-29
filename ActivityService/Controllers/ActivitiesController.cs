@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -32,7 +33,7 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
         {
             var activities = await Service.GetByUserAsync(userId);
-            return Ok(activities);
+            return activities.ToList();
         }
 
         [HttpPost]
