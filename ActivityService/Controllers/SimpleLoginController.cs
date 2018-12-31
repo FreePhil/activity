@@ -20,7 +20,7 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<string>> Login([FromForm] string userName)
         {
             SimpleUser user = await Service.LoginAsync(userName);
-            return user.Id;
+            return Ok(user.Id);
         }
     }
 }

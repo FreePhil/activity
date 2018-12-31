@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -25,57 +26,68 @@ namespace ActivityService.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserActivity>> Get(string id)
         {
-            var result = await Repository.GetAsync(id);
-            return result;
+            var result = await Service.GetActivityAsync(id);
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult<string>> Add([FromBody] UserActivity activity)
         {
-            await Repository.AddAsync(activity);
-            return activity.Id;
+            await Service.AddActivityAsync(activity);
+            return Created(nameof(Get), activity.Id);
         }
-        
-        [HttpPost("{id}/payload")]
-        [HttpPost("{id}/export")]
-        public async Task<ActionResult<string>> UpdatePayload(string id, [FromServices] IPayloadValidator validator)
-        {
-            string callbackHref = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new {id })}";
-
-            string payloadString = await ReadFromBodyAsync();
-            dynamic payload = JsonConvert.DeserializeObject(payloadString);
-
-            if (!validator.IsValid())
-            {
-                return "blablabla...";
-            }
-
-            payload.callbackHref = callbackHref;
-            
-            return JsonConvert.SerializeObject(payload);
-        }
-        
-        [HttpPost("{id}/option")]
-        public async Task<ActionResult<bool>> UpdateOption(string id, [FromBody] string option)
-        {
-            var result = await Repository.UpdateAsync(id, ac => ac.Option, option);
-
-            return result;
-        }
-        
+      
         [HttpPost("{id}/status", Name = "status")]
         public async Task<ActionResult<bool>> UpdateStatus(string id, [FromBody] string status)
         {
-            var result = await Repository.UpdateAsync(id, ac => ac.Status, status);
+            var result = await Service.UpdateStatusAsync(id, status);
 
-            return result;
+            return Ok(result);
         }
         
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
         {
             var activities = await Service.GetByUserAsync(userId);
-            return activities.ToList();
+            return Ok(activities.ToList());
+        }
+        
+                
+        [HttpPost("user/{userId}")]
+        public async Task<ActionResult<string>> Export(string userId, [FromServices] IHttpClientFactory clientFactory)
+        {
+            string payloadString = await ReadFromBodyAsync();
+            dynamic payload = JsonConvert.DeserializeObject(payloadString);
+
+            var activity = new UserActivity
+            {
+                UserId = userId,
+                Payload = payloadString
+            };
+            
+            // save to activity db
+            //
+            await Service.AddActivityAsync(activity);
+            
+            // decorate for export service
+            //
+            payload.testSpec.testId = activity.Id;
+            string callbackUrl = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new { activity.Id })}";
+            payload.callback = new { onJobFinish = callbackUrl};
+            string relayedPayload = JsonConvert.SerializeObject(payload);
+
+            // call export api
+            //
+            var client = clientFactory.CreateClient();
+            var message = await client.PostAsync("", new StringContent(relayedPayload, Encoding.UTF8, "application/json"));
+            var jsonString = await message.Content.ReadAsStringAsync();
+            var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
+
+            // update calling result
+            //
+            await Service.UpdateStatusAsync(response.TestId, response.Status);
+            
+            return Created(nameof(Get), activity.Id);
         }
 
         private async Task<string> ReadFromBodyAsync()
