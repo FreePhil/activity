@@ -13,27 +13,27 @@ namespace ActivityService.Services
             Repository = repository;
         }
 
-        public Task<UserActivity> GetActivity(string id)
+        public Task<UserActivity> GetActivityAsync(string id)
         {
             return Repository.GetAsync(id);
         }
 
-        public Task AddActivity(UserActivity activity)
+        public Task AddActivityAsync(UserActivity activity)
         {
             return Repository.AddAsync(activity);
         }
 
-        public Task<bool> UpdatePayload(string id, string payload)
+        public Task<bool> UpdatePayloadAsync(string id, string payload)
         {
             return Repository.UpdateAsync(id, ac => ac.Payload, payload);
         }
 
-        public Task<bool> UpdateOption(string id, string option)
+        public Task<bool> UpdateOptionAsync(string id, string option)
         {
             return Repository.UpdateAsync(id, ac => ac.Option, option);
         }
 
-        public Task<bool> UpdateStatus(string id, string status)
+        public Task<bool> UpdateStatusAsync(string id, string status)
         {
             return Repository.UpdateAsync(id, ac => ac.Status, status);
         }

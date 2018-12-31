@@ -32,6 +32,7 @@ namespace ActivityService.Injections
             services.AddScoped<ISimpleUserRepository, SimpleUserRepository>();
             services.AddScoped<ISimpleUserService, SimpleUserService>();
             services.AddScoped<IUserActivityService, UserActivityService>();
+            services.AddScoped<IPayloadValidator, PayloadValidator>();
             
             return services;
         }

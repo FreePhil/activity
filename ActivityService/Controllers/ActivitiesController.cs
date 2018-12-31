@@ -29,26 +29,11 @@ namespace ActivityService.Controllers
             return result;
         }
 
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
-        {
-            var activities = await Service.GetByUserAsync(userId);
-            return activities.ToList();
-        }
-
         [HttpPost]
         public async Task<ActionResult<string>> Add([FromBody] UserActivity activity)
         {
             await Repository.AddAsync(activity);
             return activity.Id;
-        }
-
-        [HttpPost("{id}/option")]
-        public async Task<ActionResult<bool>> UpdateOption(string id, [FromBody] string option)
-        {
-            var result = await Repository.UpdateAsync(id, ac => ac.Option, option);
-
-            return result;
         }
         
         [HttpPost("{id}/payload")]
@@ -70,12 +55,27 @@ namespace ActivityService.Controllers
             return JsonConvert.SerializeObject(payload);
         }
         
+        [HttpPost("{id}/option")]
+        public async Task<ActionResult<bool>> UpdateOption(string id, [FromBody] string option)
+        {
+            var result = await Repository.UpdateAsync(id, ac => ac.Option, option);
+
+            return result;
+        }
+        
         [HttpPost("{id}/status", Name = "status")]
         public async Task<ActionResult<bool>> UpdateStatus(string id, [FromBody] string status)
         {
             var result = await Repository.UpdateAsync(id, ac => ac.Status, status);
 
             return result;
+        }
+        
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
+        {
+            var activities = await Service.GetByUserAsync(userId);
+            return activities.ToList();
         }
 
         private async Task<string> ReadFromBodyAsync()
