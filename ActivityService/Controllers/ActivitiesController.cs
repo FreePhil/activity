@@ -9,8 +9,10 @@ using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NJsonSchema;
 
 namespace ActivityService.Controllers
 {
@@ -59,31 +61,27 @@ namespace ActivityService.Controllers
         [HttpPost("user/{userId}")]
         public async Task<ActionResult<string>> Export(string userId, [FromServices] IHttpClientFactory clientFactory, [FromServices] ExportModuleOptions exporter)
         {
-            string payloadString = await ReadFromBodyAsync();
-            dynamic payload = JsonConvert.DeserializeObject(payloadString);
+            string rawPayload = await ReadFromBodyAsync();
 
+            // save to activity db
+            //
             var activity = new UserActivity
             {
                 UserId = userId,
-                Payload = payloadString
+                Payload = rawPayload
             };
-            
-            // save to activity db
-            //
             await Service.AddActivityAsync(activity);
             
-            // decorate for export service
+            // inject payload for export service
             //
-            payload.testSpec.testId = activity.Id;
             string callbackUrl = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new { activity.Id })}";
-            payload.callback = new JObject();
-            payload.callback.onJobFinish = callbackUrl;
-            string relayedPayload = JsonConvert.SerializeObject(payload);
+            string payload = InjectPayload(rawPayload, activity.Id, callbackUrl);
 
             // call export api
             //
             var client = clientFactory.CreateClient();
-            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(relayedPayload, Encoding.UTF8, "application/json"));
+            
+            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
             var jsonString = await message.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
 
@@ -100,6 +98,17 @@ namespace ActivityService.Controllers
             {  
                 return await reader.ReadToEndAsync();
             }
+        }
+
+        private string InjectPayload(string jsonString, string activityId, string callbackUrl)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(jsonString);
+            payload.testSpec.testId = activityId;
+            payload.callback = new JObject();
+            payload.callback.onJobFinish = callbackUrl;
+            string relayedPayload = JsonConvert.SerializeObject(payload);
+            
+            return relayedPayload;
         }
     }
 }
