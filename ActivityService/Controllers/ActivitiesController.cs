@@ -18,13 +18,11 @@ namespace ActivityService.Controllers
 {
     [ApiController]
     [Route("api/activities")]
-    public class ActivitiesController: Controller
+    public class ActivitiesController: ControllerBase
     {
-        public IRepository<UserActivity> Repository { get; }
         public IUserActivityService Service { get; }
-        public ActivitiesController(IRepository<UserActivity> repository, IUserActivityService service)
+        public ActivitiesController(IUserActivityService service)
         {
-            Repository = repository;
             Service = service;
         }
         
@@ -39,10 +37,10 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<string>> Add([FromBody] UserActivity activity)
         {
             await Service.AddActivityAsync(activity);
-            return Created(nameof(Get), activity.Id);
+            return CreatedAtAction(nameof(Get), new {id = activity.Id}, activity.Id);
         }
       
-        [HttpPost("{id}/status", Name = "status")]
+        [HttpPost("{id}/status")]
         public async Task<ActionResult<bool>> UpdateStatus(string id, [FromBody] string status)
         {
             var result = await Service.UpdateStatusAsync(id, status);
@@ -74,22 +72,22 @@ namespace ActivityService.Controllers
             
             // inject payload for export service
             //
-            string callbackUrl = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new { activity.Id })}";
+            string callbackUrl = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.Action(nameof(UpdateStatus), new { activity.Id })}";
             string payload = InjectPayload(rawPayload, activity.Id, callbackUrl);
 
             // call export api
             //
-            var client = clientFactory.CreateClient();
-            
-            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
-            var jsonString = await message.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
+//            var client = clientFactory.CreateClient();
+//            
+//            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
+//            var jsonString = await message.Content.ReadAsStringAsync();
+//            var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
 
             // update calling result
             //
-            await Service.UpdateStatusAsync(response.TestId, response.Status);
+            await Service.UpdateStatusAsync(activity.Id, "received");
             
-            return Created(nameof(Get), activity.Id);
+            return CreatedAtAction(nameof(Get), new {id = activity.Id}, activity.Id);
         }
 
         private async Task<string> ReadFromBodyAsync()

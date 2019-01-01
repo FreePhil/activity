@@ -8,7 +8,7 @@ namespace ActivityService.Controllers
 {
     [Obsolete("Will be replace after Hanin ID establshed")]
     [Route("api/login")]
-    public class SimpleLoginController: Controller
+    public class SimpleLoginController: ControllerBase
     {
         public ISimpleUserService Service { get; }
         public SimpleLoginController(ISimpleUserService service)
@@ -20,7 +20,12 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<string>> Login([FromForm] string userName)
         {
             SimpleUser user = await Service.LoginAsync(userName);
-            return Ok(user.Id);
+
+            if (user == null)
+            {
+                return BadRequest($"{userName} login failed");
+            }
+            return user.Id;
         }
     }
 }
