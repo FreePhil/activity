@@ -5,13 +5,16 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using ActivityService.Models;
+using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ActivityService.Controllers
 {
+    [ApiController]
     [Route("api/activities")]
     public class ActivitiesController: Controller
     {
@@ -27,7 +30,7 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<UserActivity>> Get(string id)
         {
             var result = await Service.GetActivityAsync(id);
-            return Ok(result);
+            return result;
         }
 
         [HttpPost]
@@ -42,19 +45,19 @@ namespace ActivityService.Controllers
         {
             var result = await Service.UpdateStatusAsync(id, status);
 
-            return Ok(result);
+            return result;
         }
         
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
         {
             var activities = await Service.GetByUserAsync(userId);
-            return Ok(activities.ToList());
+            return activities.ToList();
         }
         
                 
         [HttpPost("user/{userId}")]
-        public async Task<ActionResult<string>> Export(string userId, [FromServices] IHttpClientFactory clientFactory)
+        public async Task<ActionResult<string>> Export(string userId, [FromServices] IHttpClientFactory clientFactory, [FromServices] ExportModuleOptions exporter)
         {
             string payloadString = await ReadFromBodyAsync();
             dynamic payload = JsonConvert.DeserializeObject(payloadString);
@@ -73,13 +76,14 @@ namespace ActivityService.Controllers
             //
             payload.testSpec.testId = activity.Id;
             string callbackUrl = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.RouteUrl("status", new { activity.Id })}";
-            payload.callback = new { onJobFinish = callbackUrl};
+            payload.callback = new JObject();
+            payload.callback.onJobFinish = callbackUrl;
             string relayedPayload = JsonConvert.SerializeObject(payload);
 
             // call export api
             //
             var client = clientFactory.CreateClient();
-            var message = await client.PostAsync("", new StringContent(relayedPayload, Encoding.UTF8, "application/json"));
+            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(relayedPayload, Encoding.UTF8, "application/json"));
             var jsonString = await message.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
 

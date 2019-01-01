@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,8 @@ namespace ActivityService.Injections
             services.AddScoped<ISimpleUserService, SimpleUserService>();
             services.AddScoped<IUserActivityService, UserActivityService>();
             services.AddScoped<IPayloadValidator, PayloadValidator>();
+
+            services.AddHttpClient();
             
             return services;
         }

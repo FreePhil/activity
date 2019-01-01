@@ -7,7 +7,7 @@ using MongoDB.Driver;
 
 namespace ActivityService.Repositories
 {
-    public class ServiceRepository<T>: IRepository<T> where T: IServiceEntity
+    public class ServiceRepository<T>: IRepository<T> where T: IBaseEntity
     {
         protected IContext Context { get; }
         public ServiceRepository(IContext context)

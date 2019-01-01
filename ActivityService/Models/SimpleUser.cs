@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ActivityService.Models
 {
-    public class SimpleUser: IServiceEntity
+    public class SimpleUser: IBaseEntity
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
