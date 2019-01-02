@@ -36,6 +36,8 @@ namespace ActivityService
 
             services.AddMongoDb(Configuration);
             services.AddActivity();
+
+            services.AddHealthChecks();
         }
 
         private void CheckOrBuildIndexes(IApplicationBuilder app)
@@ -88,6 +90,7 @@ namespace ActivityService
             });
             
             app.UseMvc();
+            app.UseHealthChecks("/api/healthcheck");
         }
     }
 }
