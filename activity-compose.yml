@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  activity:
+    image: 'activity-api:1.0.0'
+    ports:
+      - 5000:5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production

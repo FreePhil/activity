@@ -8,6 +8,7 @@ using ActivityService.Injections;
 using ActivityService.Repositories;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Routing;
+using Serilog;
 
 [assembly: ApiController]
 namespace ActivityService
@@ -46,9 +47,11 @@ namespace ActivityService
             //
             IUserActivityRepository activityRepository = app.ApplicationServices.GetService<IUserActivityRepository>();
             activityRepository.CreateIndex();
+            Log.Information("activity table checked");
             
             ISimpleUserRepository userRepository = app.ApplicationServices.GetService<ISimpleUserRepository>();
             userRepository.CreateIndex();    
+            Log.Information("user table checked");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
