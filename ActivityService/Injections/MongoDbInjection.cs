@@ -30,7 +30,11 @@ namespace ActivityService.Injections
 
                 Log.Information("Creating MongoClient using connection string: {connectionString}", connectionString);
 
-                return new MongoClient(connectionString);
+                var client = new MongoClient(connectionString);
+                
+                Log.Information("Create client successfully");
+
+                return client;
             });
 
             serviceCollection.AddSingleton(provider =>
