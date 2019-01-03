@@ -77,11 +77,11 @@ namespace ActivityService.Controllers
 
             // call export api
             //
-//            var client = clientFactory.CreateClient();
-//            
-//            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
-//            var jsonString = await message.Content.ReadAsStringAsync();
-//            var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
+            var client = clientFactory.CreateClient();
+            
+            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
+            var jsonString = await message.Content.ReadAsStringAsync();
+            var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
 
             // update calling result
             //

@@ -3,10 +3,14 @@ using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson.IO;
+using Newtonsoft.Json;
+using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace ActivityService.Controllers
 {
     [Obsolete("Will be replace after Hanin ID establshed")]
+    [ApiController]
     [Route("api/login")]
     public class SimpleLoginController: ControllerBase
     {
@@ -17,15 +21,15 @@ namespace ActivityService.Controllers
         }
         
         [HttpPost]
-        public async Task<ActionResult<string>> Login([FromForm] string userName)
+        public async Task<ActionResult<SimpleUser>> Login([FromBody] LoginUser login)
         {
-            SimpleUser user = await Service.LoginAsync(userName);
+            SimpleUser user = await Service.LoginAsync(login.UserName);
 
             if (user == null)
             {
-                return BadRequest($"{userName} login failed");
+                return BadRequest($"{login.UserName} login failed");
             }
-            return user.Id;
+            return user;
         }
     }
 }
