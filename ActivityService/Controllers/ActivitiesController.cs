@@ -80,12 +80,12 @@ namespace ActivityService.Controllers
             var client = clientFactory.CreateClient();
             
             var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
-            var jsonString = await message.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<ExportJobModel>(jsonString);
+            message.EnsureSuccessStatusCode();
+            var transferredJob = await message.Content.ReadAsAsync<ExportJobModel>();
 
             // update calling result
             //
-            await Service.UpdateStatusAsync(activity.Id, "received");
+            await Service.UpdateStatusAsync(activity.Id, transferredJob.Status);
             
             return CreatedAtAction(nameof(Get), new {id = activity.Id}, activity.Id);
         }
