@@ -39,6 +39,13 @@ namespace ActivityService
             services.AddActivity();
 
             services.AddHealthChecks();
+            services.AddCors(o => o.AddPolicy("Generic", builder =>
+            {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
         }
 
         private void CheckOrBuildIndexes(IApplicationBuilder app)
@@ -92,6 +99,7 @@ namespace ActivityService
                 return externalPath + internalUiRoute;
             });
             
+            app.UseCors("Generic");
             app.UseMvc();
             app.UseHealthChecks("/api/healthcheck");
         }
