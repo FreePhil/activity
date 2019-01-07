@@ -3,9 +3,7 @@ using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson.IO;
-using Newtonsoft.Json;
-using JsonConvert = Newtonsoft.Json.JsonConvert;
+using Newtonsoft.Json.Linq;
 
 namespace ActivityService.Controllers
 {
@@ -27,7 +25,9 @@ namespace ActivityService.Controllers
 
             if (user == null)
             {
-                return BadRequest($"{login.UserName} login failed");
+                dynamic msg = new JObject();
+                msg.errorInfo = $"{login.UserName} login failed: internal error";
+                return BadRequest(msg);
             }
             return user;
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -15,7 +16,10 @@ namespace ActivityService.Models
         public string Option { get; set; }
         public string Payload { get; set; }
         public string Status { get; set; }
-        
+        public string Name { get; set; }
+        public string SubjectName { get; set; }
+        public List<DownloadModel>  Manifests { get; set; }
+
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime UpdatedAt { get; set; } 
         
