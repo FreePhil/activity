@@ -128,8 +128,6 @@ namespace ActivityService.Controllers
 
         private DynamicPayloadRetrieval InjectPayload(string jsonString, string activityId, string callbackUrl)
         {
-            var retrieval = new DynamicPayloadRetrieval();
-            
             // modify raw payload
             //
             dynamic payload = JsonConvert.DeserializeObject(jsonString);
@@ -139,11 +137,12 @@ namespace ActivityService.Controllers
             
             // update activity from payload
             //
-            retrieval.TestName = payload.testSpec.heading.testName;
-            retrieval.SubjectName = payload.testSpec.heading.subjectName;
-            
-            retrieval.PayloadString = JsonConvert.SerializeObject(payload);
-            return retrieval;
+            return new DynamicPayloadRetrieval
+            {
+                TestName = payload.testSpec.heading.testName,
+                SubjectName = payload.testSpec.heading.subjectName,
+                PayloadString = JsonConvert.SerializeObject(payload)
+            };
         }
     }
 }
