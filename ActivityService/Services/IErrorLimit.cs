@@ -1,5 +1,4 @@
 using System;
-using ActivityService.Models;
 
 namespace ActivityService.Services
 {

@@ -6,14 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Models.Options;
-using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NJsonSchema;
 
 namespace ActivityService.Controllers
 {

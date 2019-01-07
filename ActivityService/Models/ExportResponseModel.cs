@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using MongoDB.Bson.IO;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ActivityService.Models
 {
