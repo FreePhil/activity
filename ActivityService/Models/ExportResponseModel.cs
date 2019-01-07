@@ -5,7 +5,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace ActivityService.Models
 {
-    public class ExportJobModel
+    public class ExportResponseModel
     {
         [JsonProperty("testId")]
         public string TestId { get; set; }
