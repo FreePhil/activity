@@ -9,6 +9,7 @@ using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -34,18 +35,29 @@ namespace ActivityService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Add([FromBody] UserActivity activity)
+        public async Task<ActionResult<object>> Add([FromBody] UserActivity activity)
         {
             await Service.AddActivityAsync(activity);
-            return CreatedAtAction(nameof(Get), new {id = activity.Id}, activity.Id);
+            
+            // wrap returning json
+            //
+            dynamic idObject = new JObject();
+            idObject.activityId = activity.Id;
+            
+            return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
         }
       
-        [HttpPost("{id}/status")]
-        public async Task<ActionResult<bool>> UpdateStatus(string id, [FromBody] string status)
+        [HttpPost("{id}/status", Name = "status")]
+        public async Task<ActionResult<object>> UpdateStatus(string id, [FromBody] string status)
         {
             var result = await Service.UpdateStatusAsync(id, status);
 
-            return result;
+            // wrap returning json
+            //
+            dynamic info = new JObject();
+            info.result = result;
+            
+            return info;
         }
         
         [HttpGet("user/{userId}")]
@@ -57,7 +69,10 @@ namespace ActivityService.Controllers
         
                 
         [HttpPost("user/{userId}")]
-        public async Task<ActionResult<string>> Export(string userId, [FromServices] IHttpClientFactory clientFactory, [FromServices] ExportModuleOptions exporter)
+        public async Task<ActionResult<object>> Export(string userId, 
+            [FromServices] IHttpClientFactory clientFactory,
+            [FromServices] LinkGenerator linkGenerator,
+            [FromServices] ExportModuleOptions exporter)
         {
             string rawPayload = await ReadFromBodyAsync();
 
@@ -72,22 +87,35 @@ namespace ActivityService.Controllers
             
             // inject payload for export service
             //
-            string callbackUrl = $"{HttpContext.Request.Scheme}//{HttpContext.Request.Host}{Url.Action(nameof(UpdateStatus), new { activity.Id })}";
-            string payload = InjectPayload(rawPayload, activity.Id, callbackUrl);
+            string callbackUrl = linkGenerator.GetUriByRouteValues(HttpContext, "status", new {activity.Id}); 
+            var extract = InjectPayload(rawPayload, activity.Id, callbackUrl);
+            var payload = extract.PayloadString;
+            
 
             // call export api
             //
             var client = clientFactory.CreateClient();
-            
             var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
             message.EnsureSuccessStatusCode();
+            
             var transferredJob = await message.Content.ReadAsAsync<ExportJobModel>();
+            var updatingJob = new UpdateExportedModel
+            {
+                Export = transferredJob,
+                TestName = extract.TestName,
+                SubjectName = extract.SubjectName
+            };
 
             // update calling result
             //
-            await Service.UpdateStatusAsync(activity.Id, transferredJob.Status);
+            await Service.UpdateCallbackAsync(activity.Id, updatingJob);
+
+            // wrap returning json
+            //
+            dynamic idObject = new JObject();
+            idObject.activityId = activity.Id;
             
-            return CreatedAtAction(nameof(Get), new {id = activity.Id}, activity.Id);
+            return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
         }
 
         private async Task<string> ReadFromBodyAsync()
@@ -98,15 +126,24 @@ namespace ActivityService.Controllers
             }
         }
 
-        private string InjectPayload(string jsonString, string activityId, string callbackUrl)
+        private DynamicPayloadRetrieval InjectPayload(string jsonString, string activityId, string callbackUrl)
         {
+            var retrieval = new DynamicPayloadRetrieval();
+            
+            // modify raw payload
+            //
             dynamic payload = JsonConvert.DeserializeObject(jsonString);
             payload.testSpec.testId = activityId;
             payload.callback = new JObject();
             payload.callback.onJobFinish = callbackUrl;
-            string relayedPayload = JsonConvert.SerializeObject(payload);
             
-            return relayedPayload;
+            // update activity from payload
+            //
+            retrieval.TestName = payload.testSpec.heading.testName;
+            retrieval.SubjectName = payload.testSpec.heading.subjectName;
+            
+            retrieval.PayloadString = JsonConvert.SerializeObject(payload);
+            return retrieval;
         }
     }
 }

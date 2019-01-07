@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -26,6 +27,20 @@ namespace ActivityService.Repositories
                 SortByDescending(u => u.Id).
                 ToListAsync();
             return activities;
+        }
+
+        public async Task<bool> UpdateCallbackAsync(string id, UpdateExportedModel updated)
+        {
+            var update = Builders<UserActivity>.Update
+                .Set(m => m.Name, updated.TestName)
+                .Set(m => m.SubjectName, updated.SubjectName)
+                .Set(m => m.Status, updated.Export.Status)
+                .Set(m => m.Manifests, updated.Export.Manifest.Items)
+                .Set(m => m.UpdatedAt, DateTime.UtcNow);
+            
+            var result = await Context.GetCollection<UserActivity>().UpdateOneAsync(entity => entity.Id == id, update);
+
+            return result.IsAcknowledged;
         }
     }
 }

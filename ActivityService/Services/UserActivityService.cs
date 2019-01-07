@@ -38,10 +38,14 @@ namespace ActivityService.Services
             return Repository.UpdateAsync(id, ac => ac.Status, status);
         }
 
-        public async Task<IList<UserActivity>> GetByUserAsync(string userId)
+        public Task<bool> UpdateCallbackAsync(string id, UpdateExportedModel updated)
         {
-            var activities = await Repository.GetByUserAsync(userId);
-            return activities;
+            return Repository.UpdateCallbackAsync(id, updated);
+        }
+
+        public Task<IList<UserActivity>> GetByUserAsync(string userId)
+        {
+            return Repository.GetByUserAsync(userId);
         }
     }
 }
