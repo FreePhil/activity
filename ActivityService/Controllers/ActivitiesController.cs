@@ -136,8 +136,8 @@ namespace ActivityService.Controllers
             //
             return new DynamicPayloadRetrieval
             {
-                TestName = payload.testSpec.heading.testName,
-                SubjectName = payload.testSpec.heading.subjectName,
+                TestName = payload.testSpec.metadata.testName,
+                SubjectName = payload.testSpec.metadata.subjectName,
                 PayloadString = JsonConvert.SerializeObject(payload)
             };
         }
