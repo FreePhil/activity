@@ -18,7 +18,7 @@ namespace ActivityService.Models
         public string Status { get; set; }
         public string Name { get; set; }
         public string SubjectName { get; set; }
-        public List<DownloadModel>  Manifests { get; set; }
+        public List<DownloadModel>  Manifest { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime UpdatedAt { get; set; } 

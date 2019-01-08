@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ActivityService.Models
@@ -14,9 +15,9 @@ namespace ActivityService.Models
         public string Status { get; set; }
         
         [JsonProperty("manifest")]
-        public DownloadList Manifest { get; set; }
+        public List<DownloadModel> Manifest { get; set; }
         
         [JsonProperty("messages")]
-        public MessageList Messages { get; set; }
+        public string[] Messages { get; set; }
     }
 }
