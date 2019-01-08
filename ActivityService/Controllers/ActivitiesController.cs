@@ -94,8 +94,12 @@ namespace ActivityService.Controllers
             var client = clientFactory.CreateClient();
             var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
             message.EnsureSuccessStatusCode();
+
+//            var exportResponse = await message.Content.ReadAsAsync<ExportResponseModel>();
+
+            string responseString = await message.Content.ReadAsStringAsync();
+            var exportResponse = JsonConvert.DeserializeObject<ExportResponseModel>(responseString);
             
-            var exportResponse = await message.Content.ReadAsAsync<ExportResponseModel>();
             var updatingJob = new UpdateExportedModel
             {
                 Export = exportResponse,
