@@ -45,9 +45,9 @@ namespace ActivityService.Controllers
         }
       
         [HttpPost("{id}/status", Name = "status")]
-        public async Task<ActionResult<object>> UpdateStatus(string id, [FromBody] string status)
+        public async Task<ActionResult<object>> UpdateStatus(string id, [FromBody] JobCompletionSummary job)
         {
-            var result = await Service.UpdateStatusAsync(id, status);
+            var result = await Service.UpdateCallbackAsync(id, job);
 
             // wrap returning json
             //
@@ -95,21 +95,18 @@ namespace ActivityService.Controllers
             var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
             message.EnsureSuccessStatusCode();
 
-//            var exportResponse = await message.Content.ReadAsAsync<ExportResponseModel>();
+            var exportResponse = await message.Content.ReadAsAsync<JobCompletionSummary>();
 
-            string responseString = await message.Content.ReadAsStringAsync();
-            var exportResponse = JsonConvert.DeserializeObject<ExportResponseModel>(responseString);
-            
             var updatingJob = new UpdateExportedModel
             {
-                Export = exportResponse,
+                Status = exportResponse.Status,
                 TestName = extract.TestName,
                 SubjectName = extract.SubjectName
             };
 
             // update calling result
             //
-            await Service.UpdateCallbackAsync(activity.Id, updatingJob);
+            await Service.UpdateExportedAsync(activity.Id, updatingJob);
 
             // wrap returning json
             //
