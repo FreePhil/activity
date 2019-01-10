@@ -95,11 +95,9 @@ namespace ActivityService.Controllers
             var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
             message.EnsureSuccessStatusCode();
 
-            var exportResponse = await message.Content.ReadAsAsync<JobCompletionSummary>();
-
             var updatingJob = new UpdateExportedModel
             {
-                Status = exportResponse.Status,
+                Status = "received", 
                 TestName = extract.TestName,
                 SubjectName = extract.SubjectName
             };
