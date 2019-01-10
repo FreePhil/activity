@@ -99,7 +99,7 @@ namespace ActivityService.Controllers
 
             var updatingJob = new UpdateExportedModel
             {
-                Status = exportResponse.Status,
+                Status = "received", 
                 TestName = extract.TestName,
                 SubjectName = extract.SubjectName
             };

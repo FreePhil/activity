@@ -11,7 +11,7 @@ namespace ActivityService.Models
         [JsonProperty("exportJobId")]
         public string ExportJobId { get; set; }
         
-        [JsonProperty("exportStatus")]
+        [JsonProperty("status")]
         public string Status { get; set; }
         
         [JsonProperty("manifest")]
