@@ -12,7 +12,8 @@ namespace ActivityService.Services
         Task<bool> UpdatePayloadAsync(string id, string payload);
         Task<bool> UpdateOptionAsync(string id, string option);
         Task<bool> UpdateStatusAsync(string id, string status);
-        Task<bool> UpdateCallbackAsync(string id, UpdateExportedModel updated);
+        Task<bool> UpdateExportedAsync(string id, UpdateExportedModel export);
+        Task<bool> UpdateCallbackAsync(string id, JobCompletionSummary job);
 
         Task<IList<UserActivity>> GetByUserAsync(string userId);
     }

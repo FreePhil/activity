@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace ActivityService.Models
 {
-    public class ExportResponseModel
+    public class JobCompletionSummary
     {
         [JsonProperty("testId")]
         public string TestId { get; set; }

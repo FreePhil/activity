@@ -38,9 +38,14 @@ namespace ActivityService.Services
             return Repository.UpdateAsync(id, ac => ac.Status, status);
         }
 
-        public Task<bool> UpdateCallbackAsync(string id, UpdateExportedModel updated)
+        public Task<bool> UpdateExportedAsync(string id, UpdateExportedModel export)
         {
-            return Repository.UpdateCallbackAsync(id, updated);
+            return Repository.UpdateExportedAsync(id, export);
+        }
+        
+        public Task<bool> UpdateCallbackAsync(string id, JobCompletionSummary job)
+        {
+            return Repository.UpdateCallbackAsync(id, job);
         }
 
         public Task<IList<UserActivity>> GetByUserAsync(string userId)
