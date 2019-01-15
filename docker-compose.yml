@@ -2,17 +2,12 @@ version: '3.4'
 
 services:
   activity:
-    image: '${DOCKER_REGISTRY}activity-api'
+    image: mongodocker:latest
     build:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 5000:80
+      - 5000:5000
+      - 5001:5001
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - MongoDB__hosts=mongo:27017
-      - MongoDB__database=testbank
-  mongo:
-    image: mongo:4.1
-    ports:
-      - 27017:27017
