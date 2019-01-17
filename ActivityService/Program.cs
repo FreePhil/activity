@@ -34,6 +34,7 @@ namespace ActivityService
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
+                .Enrich.FromLogContext()
                 .CreateLogger();
 
             var webHostBuilder = new WebHostBuilder()
