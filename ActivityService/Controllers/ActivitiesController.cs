@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace ActivityService.Controllers
 {
@@ -47,6 +48,7 @@ namespace ActivityService.Controllers
         [HttpPost("{id}/status", Name = "status")]
         public async Task<ActionResult<object>> UpdateStatus(string id, [FromBody] JobCompletionSummary job)
         {
+            Log.Information("Updating status for job {JobId}", job.TestId);
             var result = await Service.UpdateCallbackAsync(id, job);
 
             // wrap returning json
@@ -91,6 +93,7 @@ namespace ActivityService.Controllers
 
             // call export api
             //
+            Log.Information("Exporting job {JobId} for user {UserId}", activity.Id, userId);
             var client = clientFactory.CreateClient();
             var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
             message.EnsureSuccessStatusCode();
@@ -104,6 +107,7 @@ namespace ActivityService.Controllers
 
             // update calling result
             //
+            Log.Information("Updating job {JobId} for user {UserId} for activity repository", activity.Id, userId);
             await Service.UpdateExportedAsync(activity.Id, updatingJob);
 
             // wrap returning json
