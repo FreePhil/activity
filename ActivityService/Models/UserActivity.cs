@@ -17,6 +17,7 @@ namespace ActivityService.Models
         public string Payload { get; set; }
         public string Status { get; set; }
         public string Name { get; set; }
+        public string Volume { get; set; }
         public string SubjectName { get; set; }
         public List<DownloadModel>  Manifest { get; set; }
 
