@@ -100,8 +100,9 @@ namespace ActivityService.Controllers
 
             var updatingJob = new UpdateExportedModel
             {
-                Status = "received", 
+                Status = "accepted", 
                 TestName = extract.TestName,
+                Volume = extract.Volume,
                 SubjectName = extract.SubjectName
             };
 
@@ -141,6 +142,7 @@ namespace ActivityService.Controllers
             {
                 TestName = payload.testSpec.metadata.testName,
                 SubjectName = payload.testSpec.metadata.subjectName,
+                Volume = payload.testSpec.metadata.volume,
                 PayloadString = JsonConvert.SerializeObject(payload)
             };
         }

@@ -4,6 +4,7 @@ namespace ActivityService.Models
     {
         public string TestName { get; set; }
         public string SubjectName { get; set; }
+        public string Volume { get; set; }
         public string PayloadString { get; set; }
     }
 }

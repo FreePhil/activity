@@ -35,6 +35,7 @@ namespace ActivityService.Repositories
                 .Set(m => m.Name, export.TestName)
                 .Set(m => m.SubjectName, export.SubjectName)
                 .Set(m => m.Status, export.Status)
+                .Set(m => m.Volume, export.Volume)
                 .Set(m => m.UpdatedAt, DateTime.UtcNow);
             
             var result = await Context.GetCollection<UserActivity>().UpdateOneAsync(entity => entity.Id == id, exportUpdatingQuery);
