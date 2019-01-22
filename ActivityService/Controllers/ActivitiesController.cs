@@ -133,8 +133,8 @@ namespace ActivityService.Controllers
             //
             dynamic payload = JsonConvert.DeserializeObject(jsonString);
             payload.testSpec.testId = activityId;
-            payload.callback = new JObject();
-            payload.callback.onJobFinish = callbackUrl;
+            payload.callbacks = new JObject();
+            payload.callbacks.onJobFinish = callbackUrl;
             
             // update activity from payload
             //
