@@ -9,6 +9,7 @@ using ActivityService.Models.Options;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -85,8 +86,7 @@ namespace ActivityService.Controllers
             await Service.AddActivityAsync(activity);
             
             // inject payload for export service
-            //
-            string callbackUrl = linkGenerator.GetUriByRouteValues(HttpContext, "status", new {activity.Id}); 
+            string callbackUrl = linkGenerator.GetUriByRouteValues(HttpContext, "status", new {activity.Id}, "https"); 
             var extract = InjectPayload(rawPayload, activity.Id, callbackUrl);
             var payload = extract.PayloadString;
             
