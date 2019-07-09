@@ -19,6 +19,7 @@ namespace ActivityService.Models
         public string Name { get; set; }
         public string Volume { get; set; }
         public string SubjectName { get; set; }
+        public string ProductName { get; set; }
         public List<DownloadModel>  Manifest { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]

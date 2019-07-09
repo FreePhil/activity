@@ -7,6 +7,7 @@ namespace ActivityService.Services
     public interface IUserActivityService
     {
         Task<UserActivity> GetActivityAsync(string id);
+       
         Task AddActivityAsync(UserActivity activity);
         
         Task<bool> UpdatePayloadAsync(string id, string payload);
@@ -15,6 +16,7 @@ namespace ActivityService.Services
         Task<bool> UpdateExportedAsync(string id, UpdateExportedModel export);
         Task<bool> UpdateCallbackAsync(string id, JobCompletionSummary job);
 
-        Task<IList<UserActivity>> GetByUserAsync(string userId);
+        Task<IList<UserActivity>> GetActivitiesByUserAsync(string userId);
+        Task<IList<UserActivity>> GetActivitiesBySubjectAsync(string userId, string subjectName, string productName);
     }
 }

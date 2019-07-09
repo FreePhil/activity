@@ -62,7 +62,7 @@ namespace ActivityService.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
         {
-            var activities = await Service.GetByUserAsync(userId);
+            var activities = await Service.GetActivitiesByUserAsync(userId);
             return activities.ToList();
         }
         

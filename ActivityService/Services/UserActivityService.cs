@@ -48,9 +48,14 @@ namespace ActivityService.Services
             return Repository.UpdateCallbackAsync(id, job);
         }
 
-        public Task<IList<UserActivity>> GetByUserAsync(string userId)
+        public Task<IList<UserActivity>> GetActivitiesByUserAsync(string userId)
         {
             return Repository.GetByUserAsync(userId);
+        }
+        
+        public Task<IList<UserActivity>> GetActivitiesBySubjectAsync(string userId, string subjectName, string productName)
+        {
+            return Repository.GetBySubjectAsync(userId, subjectName, productName);
         }
     }
 }

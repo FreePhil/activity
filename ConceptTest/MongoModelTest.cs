@@ -128,5 +128,14 @@ namespace ConceptTest
 
             await repository.DeleteAsync(user.Id);
         }
+
+        [Fact]
+        public async Task FindBySubjectTest()
+        {
+            IUserActivityService service = Injector.GetService<IUserActivityService>();
+
+            var activities = await service.GetActivitiesBySubjectAsync("5c", "國中國文", "00");
+            Assert.Equal(0, activities.Count);
+        }
     }
 }

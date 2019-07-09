@@ -8,6 +8,7 @@ namespace ActivityService.Repositories
     {
         void CreateIndex();
         Task<IList<UserActivity>> GetByUserAsync(string userId);
+        Task<IList<UserActivity>> GetBySubjectAsync(string userId, string subjectName, string productName);
         Task<bool> UpdateExportedAsync(string id, UpdateExportedModel export);
         Task<bool> UpdateCallbackAsync(string id, JobCompletionSummary job);
     }
