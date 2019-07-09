@@ -135,6 +135,15 @@ namespace ConceptTest
             IUserActivityService service = Injector.GetService<IUserActivityService>();
 
             var activities = await service.GetActivitiesBySubjectAsync("5c", "國中國文", "00");
+            Assert.Equal(1, activities.Count);
+        }
+        
+        [Fact]
+        public async Task FindBySubjectTest_NoResult()
+        {
+            IUserActivityService service = Injector.GetService<IUserActivityService>();
+
+            var activities = await service.GetActivitiesBySubjectAsync("5c", "國中國文", "01");
             Assert.Equal(0, activities.Count);
         }
     }
