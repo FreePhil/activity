@@ -59,6 +59,10 @@ namespace ActivityService
             ISimpleUserRepository userRepository = app.ApplicationServices.GetService<ISimpleUserRepository>();
             userRepository.CreateIndex();    
             Log.Information("index of table 'users' checked");
+            
+            IHibernationRepository hibernationRepository = app.ApplicationServices.GetService<IHibernationRepository>();
+            hibernationRepository.CreateIndex();    
+            Log.Information("index of table 'hibernation' checked");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

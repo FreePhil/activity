@@ -14,7 +14,13 @@ namespace ActivityService.Repositories
 
         public void CreateIndex()
         {
-            throw new System.NotImplementedException();
+            var indexBuilder = Builders<Hibernation>.IndexKeys;
+            
+            var indexModel = new CreateIndexModel<Hibernation>(indexBuilder
+                .Ascending(h => h.UserId)
+                .Ascending(h => h.SubjectName)
+                .Ascending(h => h.ProductName));
+            Context.GetCollection<Hibernation>().Indexes.CreateOne(indexModel);
         }
 
         public async Task<Hibernation> GetAsync(string userId, string subjectName, string productName)

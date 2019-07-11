@@ -17,13 +17,16 @@ namespace ActivityService.Repositories
         {
             var indexBuilder = Builders<UserActivity>.IndexKeys;
             
-            var indexModel = new CreateIndexModel<UserActivity>(indexBuilder.Ascending(user => user.UserId));
+            var indexModel = new CreateIndexModel<UserActivity>(indexBuilder
+                .Ascending(activity => activity.UserId)
+                .Ascending(activity => activity.UpdatedAt));
             Context.GetCollection<UserActivity>().Indexes.CreateOne(indexModel);
             
             var subjectModel = new CreateIndexModel<UserActivity>(indexBuilder
-                .Ascending(uid => uid.UserId)
-                .Ascending(usub => usub.SubjectName)
-                .Ascending(psub => psub.ProductName));
+                .Ascending(activity => activity.UserId)
+                .Ascending(activity => activity.SubjectName)
+                .Ascending(activity => activity.ProductName)
+                .Ascending(activity => activity.UpdatedAt));
             Context.GetCollection<UserActivity>().Indexes.CreateOne(subjectModel);
         }
 
