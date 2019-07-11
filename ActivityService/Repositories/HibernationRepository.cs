@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using ActivityService.Models;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace ActivityService.Repositories
@@ -63,9 +65,48 @@ namespace ActivityService.Repositories
                     updateQuery = Builders<Hibernation>.Update
                         .Set(h => h.Stage, stage);
                 }
-                var result = await Context.GetCollection<Hibernation>()
-                    .UpdateOneAsync(h => h.UserId == userId && h.SubjectName == subjectName && h.ProductName == productName, updateQuery);
+                
             }
+        }
+
+        public async Task<Hibernation> CreateOrUpdateAsync(string userId, string subjectName, string productName, StagePayload stage)
+        {
+            var filter = Builders<Hibernation>.Filter.Where(h => h.UserId == userId && h.SubjectName == subjectName && h.ProductName == productName);
+            var updator = Builders<Hibernation>.Update
+                .SetOnInsert(h => h.UserId, userId)
+                .SetOnInsert(h => h.SubjectName, subjectName)
+                .SetOnInsert(h => h.ProductName, productName)
+                .Set(h => h.Stage, stage)
+                .Set(h => h.UpdatedAt, DateTime.Now);
+
+            Hibernation dormancy = await Context.GetCollection<Hibernation>()
+                .FindOneAndUpdateAsync(filter, updator, new FindOneAndUpdateOptions<Hibernation>()
+                {
+                    IsUpsert = true,
+                    ReturnDocument = ReturnDocument.After
+                });
+
+            return dormancy;
+        }
+        
+        public async Task<Hibernation> CreateOrUpdateAsync(Hibernation dormancy)
+        {
+            var filter = Builders<Hibernation>.Filter.Where(h => h.UserId == dormancy.UserId && h.SubjectName == dormancy.SubjectName && h.ProductName == dormancy.ProductName);
+            var updator = Builders<Hibernation>.Update
+                .SetOnInsert(h => h.UserId, dormancy.UserId)
+                .SetOnInsert(h => h.SubjectName, dormancy.SubjectName)
+                .SetOnInsert(h => h.ProductName, dormancy.ProductName)
+                .Set(h => h.Stage, dormancy.Stage)
+                .Set(h => h.UpdatedAt, DateTime.Now);
+
+            Hibernation updatedDomancy = await Context.GetCollection<Hibernation>()
+                .FindOneAndUpdateAsync(filter, updator, new FindOneAndUpdateOptions<Hibernation>()
+                {
+                    IsUpsert = true,
+                    ReturnDocument = ReturnDocument.After
+                });
+
+            return updatedDomancy;
         }
     }
 }
