@@ -17,6 +17,11 @@ namespace ActivityService.Services
         Task<bool> UpdateCallbackAsync(string id, JobCompletionSummary job);
 
         Task<IList<UserActivity>> GetActivitiesByUserAsync(string userId);
+        Task<long> GetActivityCountByUserAsync(string userId);
+        Task<IList<UserActivity>> GetActivitiesPagingByUserAsync(string userId, int pageNo, int pageSize);
+        
         Task<IList<UserActivity>> GetActivitiesBySubjectAsync(string userId, string subjectName, string productName);
+        Task<long> GetActivitiCountBySubjectAsync(string userId, string subjectName, string productName);
+        Task<IList<UserActivity>> GetActivitiesPagingBySubjectAsync(string userId, string subjectName, string productName, int pageNo, int pageSize);
     }
 }

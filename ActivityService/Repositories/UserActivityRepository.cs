@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using MongoDB.Driver;
@@ -34,6 +35,31 @@ namespace ActivityService.Repositories
                 .ToListAsync();
             return activities;
         }
+        
+        public async Task<long> GetDocumentCountByUser(string userId)
+        {
+            return await Context.GetCollection<UserActivity>()
+                .Find(u => u.UserId == userId)
+                .CountDocumentsAsync();
+        }
+
+        public async Task<IList<UserActivity>> GetByUserAsync(string userId, int pageNo, int pageSize)
+        {
+            var activities = await Context.GetCollection<UserActivity>()
+                .Find(u => u.UserId == userId)
+                .SortByDescending(u => u.Id)
+                .Skip(pageSize * pageNo)
+                .Limit(pageSize)
+                .ToListAsync();
+            return activities;
+        }
+
+        public async Task<long> GetDocumentCountBySubject(string userId, string subjectName, string productName)
+        {
+            return await Context.GetCollection<UserActivity>()
+                .Find(u => u.UserId == userId && u.SubjectName == subjectName && u.ProductName == productName)
+                .CountDocumentsAsync();
+        }
 
         public async Task<IList<UserActivity>> GetBySubjectAsync(string userId, string subjectName, string productName)
         {
@@ -45,6 +71,17 @@ namespace ActivityService.Repositories
             return activitiesBySubject;
         }
         
+        public async Task<IList<UserActivity>> GetBySubjectAsync(string userId, string subjectName, string productName, int pageNo, int pageSize)
+        {
+            var activities = await Context.GetCollection<UserActivity>()
+                .Find(u => u.UserId == userId && u.SubjectName == subjectName && u.ProductName == productName)
+                .SortByDescending(u => u.Id)
+                .Skip(pageSize * pageNo)
+                .Limit(pageSize)
+                .ToListAsync();
+            return activities;
+        }
+
         public async Task<bool> UpdateExportedAsync(string id, UpdateExportedModel export)
         {
             var exportUpdatingQuery = Builders<UserActivity>.Update

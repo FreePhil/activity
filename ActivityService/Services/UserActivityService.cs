@@ -52,10 +52,30 @@ namespace ActivityService.Services
         {
             return Repository.GetByUserAsync(userId);
         }
+
+        public Task<long> GetActivityCountByUserAsync(string userId)
+        {
+            return Repository.GetDocumentCountByUser(userId);
+        }
+
+        public Task<IList<UserActivity>> GetActivitiesPagingByUserAsync(string userId, int pageNo, int pageSize)
+        {
+            return Repository.GetByUserAsync(userId, pageNo, pageSize);
+        }
         
         public Task<IList<UserActivity>> GetActivitiesBySubjectAsync(string userId, string subjectName, string productName)
         {
             return Repository.GetBySubjectAsync(userId, subjectName, productName);
+        }
+
+        public Task<long> GetActivitiCountBySubjectAsync(string userId, string subjectName, string productName)
+        {
+            return Repository.GetDocumentCountBySubject(userId, subjectName, productName);
+        }
+
+        public Task<IList<UserActivity>> GetActivitiesPagingBySubjectAsync(string userId, string subjectName, string productName, int pageNo, int pageSize)
+        {
+            return Repository.GetBySubjectAsync(userId, subjectName, productName, pageNo, pageSize);
         }
     }
 }
