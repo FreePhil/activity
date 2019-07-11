@@ -59,6 +59,34 @@ namespace ActivityService.Controllers
             return info;
         }
         
+        [HttpGet("subject/{userId}/count")]
+        public async Task<ActionResult<long>> GetDocumentCountBySubject(string userId, 
+            [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName)
+        {
+            return await Service.GetActivitiCountBySubjectAsync(userId, subjectName, productName);
+        }
+
+        [HttpGet("subject/{userId}")]
+        public async Task<ActionResult<IList<UserActivity>>> GetBySubject(string userId, string subjectName, string productName, int pageNo, int pageSize)
+        {
+            var activities = await Service.GetActivitiesPagingBySubjectAsync(userId, subjectName, productName, pageNo, pageSize);
+            return activities.ToList();
+        }
+        
+        [HttpGet("user/{userId}/count")]
+        public async Task<ActionResult<long>> GetDocumentCountByUser(string userId)
+        {
+            return await Service.GetActivityCountByUserAsync(userId);
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId, 
+            [FromQuery(Name = "page_no")] int pageNo, [FromQuery(Name = "page_size")] int pageSize)
+        {
+            var activities = await Service.GetActivitiesPagingByUserAsync(userId, pageNo, pageSize);
+            return activities.ToList();    
+        }
+        
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
         {

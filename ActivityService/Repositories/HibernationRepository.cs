@@ -21,7 +21,7 @@ namespace ActivityService.Repositories
         {
             var awaking = await Context.GetCollection<Hibernation>()
                 .Find(u => u.UserId == userId && u.SubjectName == subjectName && u.ProductName == productName)
-                .SingleAsync();
+                .FirstOrDefaultAsync();
             
             return awaking;
         }
