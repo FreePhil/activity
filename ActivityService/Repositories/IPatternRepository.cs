@@ -8,6 +8,7 @@ namespace ActivityService.Repositories
     {
         void CreateIndex();
 
+        Task<bool> DeleteWithUserAsync(string id);
         Task<IList<QuestionPattern>> GetAllAsync(string userId, string subjectName, string productName);
         Task<IList<QuestionPattern>> GetAllWithPublicAsync(string userId, string subjectName, string productName);
     }

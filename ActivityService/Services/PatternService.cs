@@ -26,9 +26,9 @@ namespace ActivityService.Services
             return pattern;
         }
 
-        public async Task DeletePatternAsync(string id)
+        public async Task<bool> DeletePatternAsync(string id)
         {
-            await Repository.DeleteAsync(id);
+            return await Repository.DeleteWithUserAsync(id);
         }
 
         public async Task<IList<QuestionPattern>> GetPatternsAsync(string userId, string subjectName, string productName)

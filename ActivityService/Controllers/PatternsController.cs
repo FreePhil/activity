@@ -39,7 +39,11 @@ namespace ActivityService.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
-            await Service.DeletePatternAsync(id);
+            var sucessfull = await Service.DeletePatternAsync(id);
+            if (!sucessfull)
+            {
+                return BadRequest();
+            }
             return NoContent();
         }
         

@@ -8,7 +8,7 @@ namespace ActivityService.Services
     {
         Task<QuestionPattern> GetPatternAsync(string id);
         Task<QuestionPattern> CreatePatternAsync(QuestionPattern pattern);
-        Task DeletePatternAsync(string id);
+        Task<bool> DeletePatternAsync(string id);
         Task<IList<QuestionPattern>> GetPatternsAsync(string userId, string subjectName, string productName);
         Task<IList<QuestionPattern>> GetPatternsWithPublicAsync(string userId, string subjectName, string prductName);
     }
