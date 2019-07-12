@@ -32,10 +32,12 @@ namespace ActivityService.Injections
             services.AddScoped<IUserActivityRepository, UserActivityRepository>();
             services.AddScoped<ISimpleUserRepository, SimpleUserRepository>();
             services.AddScoped<IHibernationRepository, HibernationRepository>();
+            services.AddScoped<IPatternRepository, PatternRepository>();
             
             services.AddScoped<ISimpleUserService, SimpleUserService>();
             services.AddScoped<IUserActivityService, UserActivityService>();
             services.AddScoped<IHibernationService, HibernationService>();
+            services.AddScoped<IPatternService, PatternService>();
             
             services.AddScoped<IPayloadValidator, PayloadValidator>();
 
