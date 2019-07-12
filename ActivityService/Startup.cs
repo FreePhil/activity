@@ -50,7 +50,7 @@ namespace ActivityService
 
         private void CheckOrBuildIndexes(IApplicationBuilder app)
         {
-            // make sure to create user index for login
+            // Mongodb use createIndex to ensure index existing, otherwise create one.
             //
             IUserActivityRepository activityRepository = app.ApplicationServices.GetService<IUserActivityRepository>();
             activityRepository.CreateIndex();

@@ -8,7 +8,10 @@ namespace ActivityService.Services
     {
         Task<Hibernation> GetHibernationAsync(string id);
         Task<Hibernation> GetHibernationAsync(string userId, string subjectName, string productName);
-        Task<Hibernation> CreateOrUpdateHibernationAsync(Hibernation dormancy);
+        Task<Hibernation> CreateOrUpdateHibernationForwardAsync(Hibernation dormancy);
+        Task<Hibernation> CreateOrUpdateHibernationBackwardAsync(Hibernation dormancy);
         Task<Hibernation> UpdateOnTheSameStageAsync(string Id, StagePayload stageOnly);
+
+        Task DeleteHibernationAsync(string id);
     }
 }

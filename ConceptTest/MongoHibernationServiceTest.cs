@@ -30,12 +30,12 @@ namespace ConceptTest
         public async Task TestHibernationServerUpdateOnTheSameStageInSucess()
         {
             IHibernationService hibernationService = Injector.GetService<IHibernationService>();
-
+            
             var dormancy = await hibernationService.GetHibernationAsync("xxx", "ch", "00");
             StagePayload stage = new StagePayload()
             {
                 Name = "4",
-                Payload = ""
+                Payload = @"{""name"": ""john""}"
             };
 
             Hibernation updatedDormancy = null;
@@ -56,6 +56,58 @@ namespace ConceptTest
             Assert.Equal("00", target.ProductName);
             Assert.Equal("4", target.Stage.Name);
             Assert.Equal(randomPayload, target.Stage.Payload);
+        }
+        
+        [Fact]
+        public async Task TestHibernationCreate()
+        {
+            IHibernationService hibernationService = Injector.GetService<IHibernationService>();
+
+            var dormancy = new Hibernation()
+            {
+                UserId = "xxz",
+                SubjectName = "ch",
+                ProductName = "00",
+                Stage = new StagePayload()
+                {
+                    Name = "2",
+                    Payload = @"{""name"": ""john""}"
+                }
+            };
+
+            var createdDormancy = await hibernationService.CreateOrUpdateHibernationForwardAsync(dormancy);
+            var target = await hibernationService.GetHibernationAsync(createdDormancy?.Id);
+            
+            Assert.Equal("xxy", target.UserId);
+            Assert.Equal("ch", target.SubjectName);
+            Assert.Equal("00", target.ProductName);
+            Assert.Equal("2", target.Stage.Name);
+        }
+
+        [Fact]
+        public async Task TestHibernationBackward()
+        {
+            IHibernationService hibernationService = Injector.GetService<IHibernationService>();
+
+            var dormancy = new Hibernation()
+            {
+                UserId = "xxy",
+                SubjectName = "ch",
+                ProductName = "00",
+                Stage = new StagePayload()
+                {
+                    Name = "1",
+                    Payload = @"{""name"": ""tom""}"
+                }
+            };  
+            var updatedDormancy = await hibernationService.CreateOrUpdateHibernationBackwardAsync(dormancy);
+            var target = await hibernationService.GetHibernationAsync(updatedDormancy?.Id);
+            
+            Assert.Equal("xxy", target.UserId);
+            Assert.Equal("ch", target.SubjectName);
+            Assert.Equal("00", target.ProductName); 
+            Assert.Equal("1", target.Stage.Name);
+            
         }
     }
 }

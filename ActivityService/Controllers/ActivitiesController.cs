@@ -20,9 +20,11 @@ namespace ActivityService.Controllers
     public class ActivitiesController: ControllerBase
     {
         public IUserActivityService Service { get; }
-        public ActivitiesController(IUserActivityService service)
+        public IHibernationService HibernationService { get;  }
+        public ActivitiesController(IUserActivityService service, IHibernationService hibernateService)
         {
             Service = service;
+            HibernationService = hibernateService;
         }
         
         [HttpGet("{id}")]
@@ -30,6 +32,18 @@ namespace ActivityService.Controllers
         {
             var result = await Service.GetActivityAsync(id);
             return result;
+        }
+
+        [HttpGet("{id}/hibernation")]
+        public async Task<ActionResult<Hibernation>> GetHibernation(string id)
+        {
+            var result = await Service.GetActivityAsync(id);
+            if (result == null)
+            {
+                return null;
+            }
+            var dormancy = JsonConvert.DeserializeObject<Hibernation>(result.Hibernation);
+            return dormancy;
         }
 
         [HttpPost]
@@ -66,7 +80,7 @@ namespace ActivityService.Controllers
             return await Service.GetActivitiCountBySubjectAsync(userId, subjectName, productName);
         }
 
-        [HttpGet("subject/{userId}")]
+        [HttpGet("subject/{userId}/paging")]
         public async Task<ActionResult<IList<UserActivity>>> GetBySubject(string userId, string subjectName, string productName, int pageNo, int pageSize)
         {
             var activities = await Service.GetActivitiesPagingBySubjectAsync(userId, subjectName, productName, pageNo, pageSize);
@@ -79,7 +93,7 @@ namespace ActivityService.Controllers
             return await Service.GetActivityCountByUserAsync(userId);
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{userId}/paging")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId, 
             [FromQuery(Name = "page_no")] int pageNo, [FromQuery(Name = "page_size")] int pageSize)
         {
@@ -93,7 +107,6 @@ namespace ActivityService.Controllers
             var activities = await Service.GetActivitiesByUserAsync(userId);
             return activities.ToList();
         }
-        
                 
         [HttpPost("user/{userId}")]
         public async Task<ActionResult<object>> Export(string userId, 
@@ -125,12 +138,16 @@ namespace ActivityService.Controllers
             var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
             message.EnsureSuccessStatusCode();
 
+            var dormancy = await HibernationService.GetHibernationAsync(userId, extract.SubjectName, extract.ProductName);
+            var dormancyString = JsonConvert.SerializeObject(dormancy);
             var updatingJob = new UpdateExportedModel
             {
                 Status = "accepted", 
                 TestName = extract.TestName,
                 Volume = extract.Volume,
-                SubjectName = extract.SubjectName
+                SubjectName = extract.SubjectName,
+                ProductName = extract.ProductName,
+                Hibernation = dormancyString
             };
 
             // update calling result
@@ -169,6 +186,7 @@ namespace ActivityService.Controllers
             {
                 TestName = payload.testSpec.metadata.testName,
                 SubjectName = payload.testSpec.metadata.subjectName,
+                ProductName = payload.testSpec.metadata.productName,
                 Volume = payload.testSpec.metadata.volume,
                 PayloadString = JsonConvert.SerializeObject(payload)
             };
