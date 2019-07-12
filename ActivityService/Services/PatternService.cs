@@ -38,10 +38,9 @@ namespace ActivityService.Services
         
         public async Task<IList<QuestionPattern>> GetPatternsWithPublicAsync(string userId, string subjectName, string productName)
         {
-            var publicPatterns = await GetPatternsAsync(null, subjectName, productName);
-            var privatePatterns = await GetPatternsAsync(userId, subjectName, productName);
+            var patterns = await Repository.GetAllWithPublicAsync(userId, subjectName, productName);
             
-            return publicPatterns.Concat(publicPatterns).ToList();
+            return patterns;
         }
     }
 }

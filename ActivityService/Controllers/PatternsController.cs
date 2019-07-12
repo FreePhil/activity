@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -11,7 +12,7 @@ namespace ActivityService.Controllers
     [Route("api/patterns")]
     public class PatternsController: ControllerBase
     {
-        public IPatternService Service { get; }
+        private IPatternService Service { get; }
         public PatternsController(IPatternService service)
         {
             Service = service;
@@ -21,21 +22,25 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<QuestionPattern>> Get(string id)
         {
             var result = await Service.GetPatternAsync(id);
-            return result;
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(QuestionPattern pattern)
+        public async Task<ActionResult<QuestionPattern>> Create(QuestionPattern pattern)
         {
             await Service.CreatePatternAsync(pattern);
-            return Ok();
+            return CreatedAtAction(nameof(Get), new {id = pattern.Id}, pattern);
         }
         
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
             await Service.DeletePatternAsync(id);
-            return Ok();
+            return NoContent();
         }
         
         [HttpGet("subject")]
@@ -43,7 +48,12 @@ namespace ActivityService.Controllers
             [FromQuery(Name = "user_id")] string userId, [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName)
         {
             var result = await Service.GetPatternsWithPublicAsync(userId, subjectName, productName);
-            return result.ToList();
+            if (result?.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(result?.ToList());
         }
     }
 }

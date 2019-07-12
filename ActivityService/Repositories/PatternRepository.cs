@@ -35,7 +35,7 @@ namespace ActivityService.Repositories
         {
             var patterns = await Context.GetCollection<QuestionPattern>()
                 .Find(u => (u.UserId == null || u.UserId == userId) && u.SubjectName == subjectName && u.ProductName == productName)
-                .SortByDescending(u => u.UserId)
+                .SortBy(u => u.UserId)
                 .ToListAsync();
             return patterns;   
         }
