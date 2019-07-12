@@ -38,7 +38,7 @@ namespace ActivityService.Controllers
             return Ok();
         }
         
-        [HttpGet("user")]
+        [HttpGet("subject")]
         public async Task<ActionResult<List<QuestionPattern>>> GetAll(
             [FromQuery(Name = "user_id")] string userId, [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName)
         {
