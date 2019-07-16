@@ -109,5 +109,21 @@ namespace ConceptTest
             Assert.Equal("1", target.Stage.Name);
             
         }
+        
+        [Fact]
+        public async Task TestHibernationPatchHistory()
+        {
+            IHibernationService hibernationService = Injector.GetService<IHibernationService>();
+
+            var dormancy = await hibernationService.GetHibernationAsync("5d2dc557602ade946f5b65a1");
+            var updatedDormancy = await hibernationService.UpdateHistoryOnTheSameStageAsync(
+                dormancy.Id, new StagePayload() {Name = "3", Payload = "patching history 3"});
+            updatedDormancy = await hibernationService.UpdateHistoryOnTheSameStageAsync(
+                dormancy.Id, new StagePayload() {Name = "4", Payload = "patching history 4"});
+            await hibernationService.UpdateHistoryOnTheSameStageAsync(
+                dormancy.Id, new StagePayload() {Name = "5", Payload = "patching history 5"});
+            var target = await hibernationService.GetHibernationAsync(updatedDormancy?.Id);
+
+        }
     }
 }

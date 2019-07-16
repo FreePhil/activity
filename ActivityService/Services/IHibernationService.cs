@@ -11,6 +11,7 @@ namespace ActivityService.Services
         Task<Hibernation> CreateOrUpdateHibernationForwardAsync(Hibernation dormancy);
         Task<Hibernation> CreateOrUpdateHibernationBackwardAsync(Hibernation dormancy);
         Task<Hibernation> UpdateOnTheSameStageAsync(string Id, StagePayload stageOnly);
+        Task<Hibernation> UpdateHistoryOnTheSameStageAsync(string id, StagePayload history);
 
         Task DeleteHibernationAsync(string id);
     }

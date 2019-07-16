@@ -72,6 +72,12 @@ namespace ActivityService.Controllers
         {
             return await Service.UpdateOnTheSameStageAsync(id, stage);
         }
+        
+        [HttpPatch("{id}/history")]
+        public async Task<ActionResult<Hibernation>> UpdateHistoryOnTheSameStage(string id, StagePayload stage)
+        {
+            return await Service.UpdateHistoryOnTheSameStageAsync(id, stage);
+        }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteHibernation(string id)
