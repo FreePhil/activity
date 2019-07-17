@@ -22,6 +22,19 @@ namespace ActivityService.Repositories
             Context.GetCollection<QuestionPattern>().Indexes.CreateOne(indexModel);
         }
 
+        public async Task<bool> DeleteWithUserAsync(string id)
+        {
+            var filter = Builders<QuestionPattern>.Filter.Where(p => p.UserId != null && p.Id == id);
+            var result = await Context.GetCollection<QuestionPattern>()
+                .DeleteOneAsync(filter);
+
+            if (result.DeletedCount != 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<IList<QuestionPattern>> GetAllAsync(string userId, string subjectName, string productName)
         {
             var patterns = await Context.GetCollection<QuestionPattern>()
@@ -35,7 +48,7 @@ namespace ActivityService.Repositories
         {
             var patterns = await Context.GetCollection<QuestionPattern>()
                 .Find(u => (u.UserId == null || u.UserId == userId) && u.SubjectName == subjectName && u.ProductName == productName)
-                .SortByDescending(u => u.UserId)
+                .SortBy(u => u.UserId)
                 .ToListAsync();
             return patterns;   
         }

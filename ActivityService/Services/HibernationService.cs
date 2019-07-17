@@ -85,6 +85,31 @@ namespace ActivityService.Services
             return null;
         }
 
+        public async Task<Hibernation> UpdateHistoryOnTheSameStageAsync(string id, StagePayload history)
+        {
+            var dormancy = await GetHibernationAsync(id);
+
+            StagePayload checkPoint = dormancy.Stage.History;
+
+            while (checkPoint != null)
+            {
+                if (checkPoint.Name == history.Name)
+                {
+                    checkPoint.Payload = history.Payload;
+                    break;
+                }
+
+                checkPoint = checkPoint.History;
+            }
+
+            if (checkPoint != null)
+            {
+                return await Repository.CreateOrUpdateAsync(dormancy);   
+            }
+            
+            return null;
+        }
+
         public async Task DeleteHibernationAsync(string id)
         {
             await Repository.DeleteAsync(id);

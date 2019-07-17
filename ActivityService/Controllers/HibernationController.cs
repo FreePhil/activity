@@ -22,7 +22,7 @@ namespace ActivityService.Controllers
             Service = service;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("user/{userId}")]
         public async Task<ActionResult<Hibernation>> Get(string userId, [FromQuery(Name = "subject")] string subjectName,
             [FromQuery(Name = "product")] string productName)
         {
@@ -71,6 +71,20 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<Hibernation>> UpdateHibernationOnTheSameStage(string id, StagePayload stage)
         {
             return await Service.UpdateOnTheSameStageAsync(id, stage);
+        }
+        
+        [HttpPatch("{id}/history")]
+        public async Task<ActionResult<Hibernation>> UpdateHistoryOnTheSameStage(string id, StagePayload stage)
+        {
+            return await Service.UpdateHistoryOnTheSameStageAsync(id, stage);
+        }
+        
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Hibernation>> Get(string id)
+        {
+            var result = await Service.GetHibernationAsync(id);
+
+            return result;
         }
 
         [HttpDelete("{id}")]
