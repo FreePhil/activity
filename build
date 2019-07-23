@@ -2,7 +2,7 @@
 
 docker image rm hanlin/activity:0.1
 docker build -t hanlin/activity:0.1 .
-docker save -o provider.tar hanlin/activity:0.1
+docker save -o activity.tar hanlin/activity:0.1
 git checkout develop
-cp provider.tar ../pem
+cp activity.tar ../pem
 

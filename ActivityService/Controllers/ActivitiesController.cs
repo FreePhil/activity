@@ -30,6 +30,7 @@ namespace ActivityService.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserActivity>> Get(string id)
         {
+            Log.Information("Find activity by {activityId}", id);
             var result = await Service.GetActivityAsync(id);
             return result;
         }
@@ -114,6 +115,7 @@ namespace ActivityService.Controllers
             [FromServices] LinkGenerator linkGenerator,
             [FromServices] ExportModuleOptions exporter)
         {
+            
             string rawPayload = await ReadFromBodyAsync();
 
             // save to activity db
