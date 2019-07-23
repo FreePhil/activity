@@ -129,6 +129,8 @@ namespace ActivityService.Controllers
             
             // inject payload for export service
             string callbackUrl = linkGenerator.GetUriByRouteValues(HttpContext, "status", new {activity.Id}, "https"); 
+            Log.Debug("Callback url: {url}", callbackUrl);
+            
             var extract = InjectPayload(rawPayload, activity.Id, callbackUrl);
             var payload = extract.PayloadString;
             
@@ -141,7 +143,9 @@ namespace ActivityService.Controllers
             message.EnsureSuccessStatusCode();
 
             var dormancy = await HibernationService.GetHibernationAsync(userId, extract.SubjectName, extract.ProductName);
-            var dormancyString = JsonConvert.SerializeObject(dormancy);
+            Log.Information("Get hibernation with subject: {subject}, product: {product} and userid: {userId}", extract.SubjectName, extract.ProductName, userId);
+            
+            var dormancyString = dormancy == null? null: JsonConvert.SerializeObject(dormancy);
             var updatingJob = new UpdateExportedModel
             {
                 Status = "accepted", 
