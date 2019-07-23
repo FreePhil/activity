@@ -17,6 +17,12 @@ namespace ActivityService.Controllers
         {
             Service = service;
         }
+
+        [HttpGet("/api/health")]
+        public ActionResult GetHealth()
+        {
+            return Ok();
+        }
         
         [HttpPost]
         public async Task<ActionResult<SimpleUser>> Login([FromBody] LoginUser login)
