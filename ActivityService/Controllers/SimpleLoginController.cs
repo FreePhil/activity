@@ -4,6 +4,7 @@ using ActivityService.Models;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace ActivityService.Controllers
 {
@@ -21,6 +22,9 @@ namespace ActivityService.Controllers
         [HttpGet("/api/health")]
         public ActionResult GetHealth()
         {
+            Log.Debug("Ok debug");
+            Log.Information("OK information");
+            Log.Warning("Ok warning");
             return Ok();
         }
         
