@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using Serilog.Events;
 
 namespace ActivityService.Controllers
 {
@@ -144,6 +145,10 @@ namespace ActivityService.Controllers
 
             var dormancy = await HibernationService.GetHibernationAsync(userId, extract.SubjectName, extract.ProductName);
             Log.Information("Get hibernation with subject: {subject}, product: {product} and userid: {userId}", extract.SubjectName, extract.ProductName, userId);
+            if (dormancy == null)
+            {
+                Log.Warning("No such hibernation exists");
+            }
             
             var dormancyString = dormancy == null? null: JsonConvert.SerializeObject(dormancy);
             var updatingJob = new UpdateExportedModel
