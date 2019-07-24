@@ -6,6 +6,8 @@ namespace ActivityService.Models
         public string TestName { get; set; }
         public string SubjectName { get; set; }
         public string ProductName { get; set; }
+        public string SubjectId { get; set; }
+        public string ProductId { get; set; }
         public string Hibernation { get; set; }
         public string Volume { get; set; }
     }

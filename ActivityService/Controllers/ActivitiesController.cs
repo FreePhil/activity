@@ -135,7 +135,6 @@ namespace ActivityService.Controllers
             var extract = InjectPayload(rawPayload, activity.Id, callbackUrl);
             var payload = extract.PayloadString;
             
-
             // call export api
             //
             Log.Information("Exporting job {JobId} for user {UserId}", activity.Id, userId);
@@ -150,7 +149,7 @@ namespace ActivityService.Controllers
                 Log.Warning("No such hibernation exists");
             }
             
-            var dormancyString = dormancy == null? null: JsonConvert.SerializeObject(dormancy);
+            string dormancyString = (dormancy == null? null: JsonConvert.SerializeObject(dormancy));
             var updatingJob = new UpdateExportedModel
             {
                 Status = "accepted", 
@@ -158,6 +157,8 @@ namespace ActivityService.Controllers
                 Volume = extract.Volume,
                 SubjectName = extract.SubjectName,
                 ProductName = extract.ProductName,
+                SubjectId = extract.SubjectId,
+                ProductId = extract.ProductId,
                 Hibernation = dormancyString
             };
 
@@ -198,6 +199,8 @@ namespace ActivityService.Controllers
                 TestName = payload.testSpec.metadata.testName,
                 SubjectName = payload.testSpec.metadata.subjectName,
                 ProductName = payload.testSpec.metadata.productName,
+                SubjectId = payload.testSpec.metadata.subjectId,
+                ProductId = payload.testSpec.metadata.productId,
                 Volume = payload.testSpec.metadata.volume,
                 PayloadString = JsonConvert.SerializeObject(payload)
             };
