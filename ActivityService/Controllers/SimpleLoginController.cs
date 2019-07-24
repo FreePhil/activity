@@ -22,8 +22,6 @@ namespace ActivityService.Controllers
         [HttpGet("/api/health")]
         public ActionResult GetHealth()
         {
-            Log.Debug("Ok debug");
-            Log.Information("OK information");
             Log.Warning("Ok warning");
             return Ok();
         }
