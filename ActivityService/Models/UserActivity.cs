@@ -20,6 +20,8 @@ namespace ActivityService.Models
         public string Volume { get; set; }
         public string SubjectName { get; set; }
         public string ProductName { get; set; }
+        public string SubjectId { get; set; }
+        public string ProductId { get; set; }
         public string Hibernation { get; set; }
         public List<DownloadModel>  Manifest { get; set; }
 

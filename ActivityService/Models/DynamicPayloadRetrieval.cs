@@ -7,5 +7,7 @@ namespace ActivityService.Models
         public string ProductName { get; set; }
         public string Volume { get; set; }
         public string PayloadString { get; set; }
+        public string SubjectId { get; set; }
+        public string ProductId { get; set; }
     }
 }
