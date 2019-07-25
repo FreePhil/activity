@@ -41,7 +41,17 @@ namespace ConceptTest
                     {
                         QuestionType = "t1",
                         QuestionNumber = 2,
-                        AnsweringNumber = 3
+                        AnsweringNumber = 3,
+                        IsCrossDomain = true,
+                        Level = "5"
+                    },
+                    new PatternItem()
+                    {
+                        QuestionType = "t1",
+                        QuestionNumber = 5,
+                        AnsweringNumber = 6,
+                        IsCrossDomain = false,
+                        Level = "3"
                     }
                 }
             };
@@ -51,6 +61,10 @@ namespace ConceptTest
             var stored = await repository.GetAsync(pattern.Id);
             
             Assert.Equal(pattern.PatternName, stored.PatternName);
+            Assert.Equal("5", pattern.Items[0].Level);
+            Assert.True(pattern.Items[0].IsCrossDomain);
+            Assert.Equal("3", pattern.Items[1].Level);
+            Assert.False(pattern.Items[1].IsCrossDomain);
         }
 
         [Fact]
