@@ -15,6 +15,7 @@ namespace ActivityService.Models
         public string SubjectName { get; set; }
         public string ProductName { get; set; }
         public string PatternName { get; set; }
+        public string Payload { get; set; }
         public IList<PatternItem> Items { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
