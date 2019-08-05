@@ -83,7 +83,9 @@ namespace ActivityService.Controllers
         }
 
         [HttpGet("subject/{userId}/paging")]
-        public async Task<ActionResult<IList<UserActivity>>> GetBySubject(string userId, string subjectName, string productName, int pageNo, int pageSize)
+        public async Task<ActionResult<IList<UserActivity>>> GetBySubject(string userId, 
+            [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName, 
+            [FromQuery(Name = "page_no")] int pageNo, [FromQuery(Name = "page_size")] int pageSize)
         {
             var activities = await Service.GetActivitiesPagingBySubjectAsync(userId, subjectName, productName, pageNo, pageSize);
             return activities.ToList();
