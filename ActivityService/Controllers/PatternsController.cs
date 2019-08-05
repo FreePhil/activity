@@ -54,7 +54,7 @@ namespace ActivityService.Controllers
             var result = await Service.GetPatternsWithPublicAsync(userId, subjectName, productName);
             if (result?.Count == 0)
             {
-                return NotFound();
+                return NoContent();
             }
 
             return Ok(result?.ToList());
