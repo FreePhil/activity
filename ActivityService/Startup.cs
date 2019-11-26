@@ -39,13 +39,21 @@ namespace ActivityService
             services.AddActivity();
 
             services.AddHealthChecks();
-            services.AddCors(o => o.AddPolicy("Generic", builder =>
-            {
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            }));
+            services
+                .AddCors(o => o.AddPolicy("Generic", builder =>
+                {
+                    builder
+                        .WithOrigins("http://", "http://")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                }))
+                .AddCors(o => o.AddPolicy("OpenAccess", builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .WithMethods("GET");
+                }));
         }
 
         private void CheckOrBuildIndexes(IApplicationBuilder app)

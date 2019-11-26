@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Models.Options;
 using ActivityService.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
@@ -28,6 +29,7 @@ namespace ActivityService.Controllers
             HibernationService = hibernateService;
         }
         
+        [EnableCors("OpenAccess")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserActivity>> Get(string id)
         {
