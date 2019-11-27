@@ -43,7 +43,7 @@ namespace ActivityService
                 .AddCors(o => o.AddPolicy("Generic", builder =>
                 {
                     builder
-                        .WithOrigins("http://", "http://")
+                        .WithOrigins("https://testbank.hle.com.tw", "https://qa-testbank.hle.com.tw")
                         .AllowAnyMethod()
                         .AllowAnyHeader();
                 }))
@@ -114,8 +114,7 @@ namespace ActivityService
                 var externalPath = request.Headers.ContainsKey("X-External-Path") ? request.Headers["X-External-Path"].First() : "";
                 return externalPath + internalUiRoute;
             });
-            
-            app.UseCors("Generic");
+
             app.UseMvc();
             app.UseHealthChecks("/api/healthcheck");
         }
