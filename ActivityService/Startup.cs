@@ -52,7 +52,7 @@ namespace ActivityService
                     builder
                         .AllowAnyOrigin()
                         .AllowAnyHeader()
-                        .WithMethods("GET");
+                        .AllowAnyMethod();
                 }));
         }
 

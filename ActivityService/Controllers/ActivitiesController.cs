@@ -65,7 +65,7 @@ namespace ActivityService.Controllers
             return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
         }
       
-        [EnableCors("Generic")]
+        [EnableCors("OpenAcess")]
         [HttpPost("{id}/status", Name = "status")]
         public async Task<ActionResult<object>> UpdateStatus(string id, [FromBody] JobCompletionSummary job)
         {
