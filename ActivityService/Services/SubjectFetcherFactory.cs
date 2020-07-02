@@ -8,6 +8,15 @@ namespace ActivityService.Services
     {
         private const string EduDomain = "edu";
         private const string TestGoDemain = "testgo";
+
+        private ISubjectFetcher eduFetcher;
+        private ISubjectFetcher testGoFetcher;
+
+        public SubjectFetcherFactory(EduSubjectFetcher eduFetcher, TestGoSubjectFetcher testGoFetcher)
+        {
+            this.eduFetcher = eduFetcher;
+            this.testGoFetcher = testGoFetcher;
+        }
         
         public ISubjectFetcher Create(string userDomain)
         {
@@ -15,10 +24,10 @@ namespace ActivityService.Services
             switch (normalizedDomain)
             {
                 case EduDomain:
-                    return new EduSubjectFetcher();
+                    return eduFetcher;
                     break;
                 case TestGoDemain:
-                    return new TestGoSubjectFetcher();
+                    return testGoFetcher;
                     break;
                 default:
                     throw new Exception($"{userDomain} did not implement");

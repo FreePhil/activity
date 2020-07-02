@@ -7,7 +7,7 @@ namespace ActivityService.Services
     {
         public IList<Subject> Load(string userId)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
     }
 }
