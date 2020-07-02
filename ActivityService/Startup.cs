@@ -27,6 +27,7 @@ namespace ActivityService
         {
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
+            services.AddMemoryCache();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<ForwardedHeadersOptions>(options =>
