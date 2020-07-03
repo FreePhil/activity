@@ -12,10 +12,10 @@ namespace ActivityService.Services
             this.fetcherFactory = fetcherFactory;
         }
         
-        public IList<Subject> GetProductListing(string userId, string userDomain)
+        public IList<EducationLevel> GetProductListing(string userId, string userDomain)
         {
             var fetcher = fetcherFactory.Create(userDomain);
-            IList<Subject> subjects = fetcher.Load(userId);
+            IList<EducationLevel> subjects = fetcher.Load(userId);
 
             return subjects;
         }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ActivityService.Injections;
+using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Routing;
@@ -34,6 +35,8 @@ namespace ActivityService
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
+            services.Configure<JsonLocationOptions>(Configuration.GetSection("JsonLocation"));
+            
             services.AddSwaggerDocument();
 
             services.AddMongoDb(Configuration);

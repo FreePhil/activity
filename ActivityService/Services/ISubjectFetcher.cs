@@ -5,6 +5,6 @@ namespace ActivityService.Services
 {
     public interface ISubjectFetcher
     {
-        IList<Subject> Load(string userId);
+        IList<EducationLevel> Load(string userId);
     }
 }

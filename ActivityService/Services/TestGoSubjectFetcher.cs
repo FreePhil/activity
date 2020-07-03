@@ -12,7 +12,7 @@ namespace ActivityService.Services
         {
             this.logger = logger;
         }
-        public IList<Subject> Load(string userId)
+        public IList<EducationLevel> Load(string userId)
         {
             logger.LogInformation("hello");
             return null;

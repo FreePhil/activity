@@ -5,6 +5,6 @@ namespace ActivityService.Services
 {
     public interface ISubjectService
     {
-        IList<Subject> GetProductListing(string userId, string userDomain);
+        IList<EducationLevel> GetProductListing(string userId, string userDomain);
     }
 }

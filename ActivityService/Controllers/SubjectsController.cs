@@ -18,7 +18,7 @@ namespace ActivityService.Controllers
             this.fetcherFactory = fetcherFactory;
         }
 
-        [HttpGet("product_listing/{userId}")]
+        [HttpGet("product-listing/{userId}")]
         public ActionResult<IList<Subject>> LoadSubjectDetail(string userId, [FromQuery(Name = "domain")] string domain)
         {
             var fetcher = fetcherFactory.Create(domain);
