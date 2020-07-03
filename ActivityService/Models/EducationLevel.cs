@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace ActivityService.Models
 {
@@ -6,6 +7,6 @@ namespace ActivityService.Models
     {
         public int Id { get; set; }
         public string SchoolType { get; set; }
-        private IList<Subject> Subjects { get; set; }
+        public IList<Subject> Subjects { get; set; } = new List<Subject>();
     }
 }

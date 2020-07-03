@@ -4,5 +4,6 @@ namespace ActivityService.Models.Options
     {
         public string SubjectUri { get; set; }
         public string VersionUri { get; set; }
+        public string TestGoUri { get; set; }
     }
 }

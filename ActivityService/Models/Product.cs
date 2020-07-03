@@ -4,6 +4,6 @@ namespace ActivityService.Models
 {
     public class Product: LookupModel
     {
-        public IList<LookupModel> Verions { get; set; }
+        public IList<LookupModel> Versions { get; set; } = new List<LookupModel>();
     }
 }
