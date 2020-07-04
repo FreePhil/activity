@@ -69,7 +69,8 @@ namespace ActivityService.Services
                 
                 levelsDictionary[subject.Id.Substring(0, 1)].Subjects.Add(subject);
             }
-            return levelsDictionary.Values.ToList();
+
+            return levelsDictionary.Values.Where(level => level.Subjects.Count > 0).ToList();
         }
     }
 }
