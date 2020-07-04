@@ -3,6 +3,7 @@ using ActivityService.Models;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ActivityService.Controllers
 {
@@ -25,6 +26,17 @@ namespace ActivityService.Controllers
             var subjects = fetcher.Load(userId);
 
             return Ok(subjects);
+        }
+
+        [HttpDelete("cache")]
+        public IActionResult RemoveCache([FromServices] IMemoryCache cache)
+        {
+            cache.Remove("education-level");
+            cache.Remove("subjects-lookup");
+            cache.Remove("products-lookup");
+            cache.Remove("versions-lookup");
+            
+            return NoContent();
         }
     }
 }
