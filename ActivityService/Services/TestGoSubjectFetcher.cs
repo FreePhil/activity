@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -15,17 +16,24 @@ namespace ActivityService.Services
     {
         private IHttpClientFactory httpClientFactory;
         private JsonLocationOptions jsonUri;
+        private ICacheFiller cacheFiller;
         private IMemoryCache cache;
 
-        public TestGoSubjectFetcher(IHttpClientFactory httpClientFactory, IOptionsMonitor<JsonLocationOptions> configAccessor, IMemoryCache cache)
+        public TestGoSubjectFetcher(
+            IHttpClientFactory httpClientFactory, 
+            IOptionsMonitor<JsonLocationOptions> configAccessor, 
+            ICacheFiller cacheFiller,
+            IMemoryCache cache)
         {
             this.httpClientFactory = httpClientFactory;
             this.jsonUri = configAccessor.CurrentValue;
+            this.cacheFiller = cacheFiller;
             this.cache = cache;
         }
 
         public IList<EducationLevel> Load(string userId)
         {
+            EnsureCacheLoaded();
             Task<string> task = Task.Run<string>(async () =>
             {
                 var client = httpClientFactory.CreateClient();
@@ -37,6 +45,23 @@ namespace ActivityService.Services
             var subjectContainer = JsonConvert.DeserializeObject<TestGoSubject>(subjectJson);
 
             return ConvertToEducationLevel(subjectContainer);
+        }
+
+        private void EnsureCacheLoaded()
+        {
+            IList<EducationLevel> levels = cache.GetOrCreate<IList<EducationLevel>>("education-level", entry =>
+            {
+                try
+                {
+                    Task<IList<EducationLevel>> task =
+                        Task.Run<IList<EducationLevel>>(async () => await cacheFiller.Load());
+                    return task.Result;
+                }
+                catch (Exception)
+                {
+                    return new List<EducationLevel>();
+                }
+            });
         }
 
         private IList<EducationLevel> ConvertToEducationLevel(TestGoSubject subjectContainer)
