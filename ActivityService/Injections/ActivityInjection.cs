@@ -41,6 +41,12 @@ namespace ActivityService.Injections
             
             services.AddScoped<IPayloadValidator, PayloadValidator>();
 
+            services.AddTransient<ISubjectFetcherFactory, SubjectFetcherFactory>();
+            services.AddTransient<ISubjectService, SubjectService>();
+            services.AddTransient<TestGoSubjectFetcher>();
+            services.AddTransient<EduSubjectFetcher>();
+            services.AddTransient<ICacheFiller, SubjectCacheFiller>();
+
             services.AddHttpClient();
             
             return services;

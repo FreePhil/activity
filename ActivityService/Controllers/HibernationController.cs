@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal;
@@ -13,6 +14,7 @@ namespace ActivityService.Controllers
 {
     [ApiController]
     [Route("api/hibernation")]
+    [EnableCors("Generic")]
     public class HibernationController: ControllerBase
     {
         public IHibernationService Service { get; }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ActivityService.Injections;
+using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Routing;
@@ -27,25 +28,36 @@ namespace ActivityService
         {
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
+            services.AddMemoryCache();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
+            services.Configure<JsonLocationOptions>(Configuration.GetSection("JsonLocation"));
+            
             services.AddSwaggerDocument();
 
             services.AddMongoDb(Configuration);
             services.AddActivity();
 
             services.AddHealthChecks();
-            services.AddCors(o => o.AddPolicy("Generic", builder =>
-            {
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            }));
+            services
+                .AddCors(o => o.AddPolicy("Generic", builder =>
+                {
+                    builder
+                        .WithOrigins("https://testbank.hle.com.tw", "https://qa-testbank.hle.com.tw")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                }))
+                .AddCors(o => o.AddPolicy("OpenAccess", builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }));
         }
 
         private void CheckOrBuildIndexes(IApplicationBuilder app)
@@ -106,8 +118,7 @@ namespace ActivityService
                 var externalPath = request.Headers.ContainsKey("X-External-Path") ? request.Headers["X-External-Path"].First() : "";
                 return externalPath + internalUiRoute;
             });
-            
-            app.UseCors("Generic");
+
             app.UseMvc();
             app.UseHealthChecks("/api/healthcheck");
         }

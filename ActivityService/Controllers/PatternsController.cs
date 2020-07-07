@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityService.Controllers
 {
     [ApiController]
     [Route("api/patterns")]
+    [EnableCors("Generic")]
     public class PatternsController: ControllerBase
     {
         private IPatternService Service { get; }

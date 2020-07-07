@@ -22,9 +22,6 @@ namespace ActivityService.Models
         public DateTime UpdatedAt { get; set; } 
         
         [BsonIgnore]
-        public DateTime CreatedAt
-        {
-            get { return ObjectId.Parse(Id).CreationTime.ToLocalTime();  }
-        }
+        public DateTime CreatedAt => ObjectId.Parse(Id).CreationTime.ToLocalTime();
     }
 }

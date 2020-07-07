@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -9,6 +10,7 @@ using Serilog;
 namespace ActivityService.Controllers
 {
     [Obsolete("Will be replace after Hanin ID establshed")]
+    [EnableCors("OpenAccess")]
     [ApiController]
     [Route("api/login")]
     public class SimpleLoginController: ControllerBase
