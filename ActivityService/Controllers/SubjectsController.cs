@@ -9,7 +9,7 @@ using Serilog;
 namespace ActivityService.Controllers
 {
     [ApiController]
-    [EnableCors("Generic")]
+    [EnableCors("RestrictedAccess")]
     [Route("api/subjects")]
     public class SubjectsController: ControllerBase
     {

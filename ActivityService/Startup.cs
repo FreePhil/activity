@@ -46,7 +46,7 @@ namespace ActivityService
             services
                 .AddCors(o =>
                 {
-                    o.AddPolicy("Generic", builder =>
+                    o.AddPolicy("RestrictedAccess", builder =>
                     {
                         builder
                             .WithOrigins(new string[]
@@ -54,7 +54,7 @@ namespace ActivityService
                                 "https://testbank.hle.com.tw",
                                 "https://qa-testbank.hle.com.tw",
                                 "http://localhost:8080",
-                                "http://localhost:58234"
+                                "http://localhost:8081"
                             })
                             .AllowAnyMethod()
                             .AllowAnyHeader();
