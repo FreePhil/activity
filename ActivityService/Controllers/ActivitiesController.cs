@@ -28,8 +28,16 @@ namespace ActivityService.Controllers
             Service = service;
             HibernationService = hibernateService;
         }
+
+        [EnableCors("Generic")]
+        [HttpGet("cors-test")]
+        public IActionResult Get()
+        {
+            Log.Information("Access sucessfully");
+            return Ok();
+        }
         
-        [EnableCors("OpenAccess")]
+        [EnableCors("Generic")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserActivity>> Get(string id)
         {

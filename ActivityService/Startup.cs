@@ -44,20 +44,29 @@ namespace ActivityService
 
             services.AddHealthChecks();
             services
-                .AddCors(o => o.AddPolicy("Generic", builder =>
+                .AddCors(o =>
                 {
-                    builder
-                        .WithOrigins("https://testbank.hle.com.tw", "https://qa-testbank.hle.com.tw")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader();
-                }))
-                .AddCors(o => o.AddPolicy("OpenAccess", builder =>
-                {
-                    builder
-                        .AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                }));
+                    o.AddPolicy("Generic", builder =>
+                    {
+                        builder
+                            .WithOrigins(new string[]
+                            {
+                                "https://testbank.hle.com.tw",
+                                "https://qa-testbank.hle.com.tw",
+                                "http://localhost:8080",
+                                "http://localhost:58234"
+                            })
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+                    o.AddPolicy("OpenAccess", builder =>
+                    {
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+                });
         }
 
         private void CheckOrBuildIndexes(IApplicationBuilder app)

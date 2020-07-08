@@ -4,11 +4,12 @@ using ActivityService.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Serilog;
 
 namespace ActivityService.Controllers
 {
     [ApiController]
-    [EnableCors("OpenAccess")]
+    [EnableCors("Generic")]
     [Route("api/subjects")]
     public class SubjectsController: ControllerBase
     {
@@ -35,6 +36,8 @@ namespace ActivityService.Controllers
             cache.Remove("subjects-lookup");
             cache.Remove("products-lookup");
             cache.Remove("versions-lookup");
+            
+            Log.Information("cache removed");
             
             return NoContent();
         }
