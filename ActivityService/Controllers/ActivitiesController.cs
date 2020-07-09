@@ -29,7 +29,7 @@ namespace ActivityService.Controllers
             HibernationService = hibernateService;
         }
 
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("cors-test")]
         public IActionResult Get()
         {
@@ -37,7 +37,7 @@ namespace ActivityService.Controllers
             return Ok();
         }
         
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserActivity>> Get(string id)
         {
@@ -46,7 +46,7 @@ namespace ActivityService.Controllers
             return result;
         }
 
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("{id}/hibernation")]
         public async Task<ActionResult<Hibernation>> GetHibernation(string id)
         {
@@ -59,7 +59,7 @@ namespace ActivityService.Controllers
             return dormancy;
         }
 
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpPost]
         public async Task<ActionResult<object>> Add([FromBody] UserActivity activity)
         {
@@ -88,7 +88,7 @@ namespace ActivityService.Controllers
             return info;
         }
         
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("subject/{userId}/count")]
         public async Task<ActionResult<long>> GetDocumentCountBySubject(string userId, 
             [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName)
@@ -96,7 +96,7 @@ namespace ActivityService.Controllers
             return await Service.GetActivitiCountBySubjectAsync(userId, subjectName, productName);
         }
 
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("subject/{userId}/paging")]
         public async Task<ActionResult<IList<UserActivity>>> GetBySubject(string userId, 
             [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName, 
@@ -106,14 +106,14 @@ namespace ActivityService.Controllers
             return activities.ToList();
         }
         
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("user/{userId}/count")]
         public async Task<ActionResult<long>> GetDocumentCountByUser(string userId)
         {
             return await Service.GetActivityCountByUserAsync(userId);
         }
 
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("user/{userId}/paging")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId, 
             [FromQuery(Name = "page_no")] int pageNo, [FromQuery(Name = "page_size")] int pageSize)
@@ -122,7 +122,7 @@ namespace ActivityService.Controllers
             return activities.ToList();    
         }
         
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
         {
@@ -130,7 +130,7 @@ namespace ActivityService.Controllers
             return activities.ToList();
         }
                 
-        [EnableCors("Generic")]
+        [EnableCors("RestrictedAccess")]
         [HttpPost("user/{userId}")]
         public async Task<ActionResult<object>> Export(string userId, 
             [FromServices] IHttpClientFactory clientFactory,

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -25,27 +26,33 @@ namespace ActivityService.Services
    
         public async Task<IList<EducationLevel>> Load()
         {
-            IList<EducationLevel> allLevels = null;
+            // IList<EducationLevel> allLevels = null;
             var httpClient = httpClientFactory.CreateClient();
+            using (var versionResponse = await httpClient.GetAsync(jsonUri.VersionUri))
+            {
+                var versionJson = await versionResponse.Content.ReadAsStringAsync();
+                var versionDictionary = JsonConvert.DeserializeObject<IList<LookupModel>>(versionJson).ToDictionary(k => k.Id, n => n.Name);
+                cache.Set<IDictionary<string, string>>("versions-lookup", versionDictionary);
+            }
             using (var subjectResponse = await httpClient.GetAsync(jsonUri.SubjectUri))
             {
                 var subjectJson = await subjectResponse.Content.ReadAsStringAsync();
-                allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(subjectJson);
+                var allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(subjectJson);
                 CreateLookupCache(allLevels);
             }
+            IList<EducationLevel> eduLevels = null;
+            using (var eduResponse = await httpClient.GetAsync(jsonUri.EduSubjectUri))
+            {
+                var eduJson = await eduResponse.Content.ReadAsStringAsync();
+                eduLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(eduJson);
+                AddDefaultVersion(eduLevels);
+            }
 
-            return allLevels;
+            return eduLevels;
         }
         
         private void CreateLookupCache(IList<EducationLevel> levels)
         {
-            cache.Set<IDictionary<string, string>>("versions-lookup", new Dictionary<string, string>
-            {
-                {"H", "翰林"},
-                {"K", "康輯"},
-                {"N", "南一"}
-            });
-            
             if (levels == null) return;
             
             IDictionary<string, string> subjectDictionary = new Dictionary<string, string>(); 
@@ -65,15 +72,26 @@ namespace ActivityService.Services
                         {
                             productDictionary.Add(product.Id, product.Name);
                         }
-                        
-                        // append default version
-                        product.Versions.Add(new LookupModel() { Id = "H", Name = "翰林"});
                     }
                 }
             }
             
             cache.Set<IDictionary<string, string>>("subjects-lookup", subjectDictionary);
             cache.Set<IDictionary<string, string>>("products-lookup", productDictionary);
+        }
+
+        private void AddDefaultVersion(IList<EducationLevel> levels)
+        {
+            foreach (var level in levels)
+            {
+                foreach (var subject in level.Subjects)
+                {
+                    foreach (var product in subject.Products)
+                    {
+                        product.Versions.Add(new LookupModel { Id = "H", Name = "翰林版"});
+                    }
+                }
+            }
         }
     }
 }
