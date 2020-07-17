@@ -28,12 +28,6 @@ namespace ActivityService.Services
         {
             // IList<EducationLevel> allLevels = null;
             var httpClient = httpClientFactory.CreateClient();
-            using (var versionResponse = await httpClient.GetAsync(jsonUri.VersionUri))
-            {
-                var versionJson = await versionResponse.Content.ReadAsStringAsync();
-                var versionDictionary = JsonConvert.DeserializeObject<IList<LookupModel>>(versionJson).ToDictionary(k => k.Id, n => n.Name);
-                cache.Set<IDictionary<string, string>>("versions-lookup", versionDictionary);
-            }
             using (var subjectResponse = await httpClient.GetAsync(jsonUri.SubjectUri))
             {
                 var subjectJson = await subjectResponse.Content.ReadAsStringAsync();
