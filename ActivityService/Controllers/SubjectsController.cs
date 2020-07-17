@@ -35,7 +35,6 @@ namespace ActivityService.Controllers
             cache.Remove("education-level");
             cache.Remove("subjects-lookup");
             cache.Remove("products-lookup");
-            cache.Remove("versions-lookup");
             
             Log.Information("cache removed");
             

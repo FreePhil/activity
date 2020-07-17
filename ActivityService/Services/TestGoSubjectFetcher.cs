@@ -75,7 +75,6 @@ namespace ActivityService.Services
             };
             var subjectsLookupTable = cache.Get<IDictionary<string, string>>("subjects-lookup");
             var productsLookupTable = cache.Get<IDictionary<string, string>>("products-lookup");
-            var versionsLookupTable = cache.Get<IDictionary<string, string>>("versions-lookup");
             
             
             foreach (var subject in subjectContainer.Subjects)
@@ -85,11 +84,6 @@ namespace ActivityService.Services
                 foreach (var product in subject.Products)
                 {
                     product.Name = productsLookupTable[product.Id];
-                    
-                    foreach (var version in product.Versions)
-                    {
-                        version.Name = versionsLookupTable[version.Id];
-                    }
                 }
                 
                 levelsDictionary[subject.Id.Substring(0, 1)].Subjects.Add(subject);
