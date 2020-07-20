@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -158,10 +159,22 @@ namespace ActivityService.Controllers
             
             // call export api
             //
+            bool isExportFailed = false;
+            Exception error = null;
             Log.Information("Exporting job {JobId} for user {UserId}", activity.Id, userId);
-            var client = clientFactory.CreateClient();
-            var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}", new StringContent(payload, Encoding.UTF8, "application/json"));
-            message.EnsureSuccessStatusCode();
+            try
+            {
+                var client = clientFactory.CreateClient();
+                var message = await client.PostAsync($"{exporter.Host}/{exporter.EndPoint}",
+                    new StringContent(payload, Encoding.UTF8, "application/json"));
+                message.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                isExportFailed = true;
+                error = e;
+                Log.Warning("exporting job {JobId} of {UserId} failed with message {Message}", activity.Id, userId, e.Message);    
+            }
 
             var dormancy = await HibernationService.GetHibernationAsync(userId, extract.SubjectName, extract.ProductName);
             Log.Information("Get hibernation with subject: {subject}, product: {product} and userid: {userId}", extract.SubjectName, extract.ProductName, userId);
@@ -173,7 +186,6 @@ namespace ActivityService.Controllers
             string dormancyString = (dormancy == null? null: JsonConvert.SerializeObject(dormancy));
             var updatingJob = new UpdateExportedModel
             {
-                Status = "accepted", 
                 TestName = extract.TestName,
                 Volume = extract.Volume,
                 SubjectName = extract.SubjectName,
@@ -182,18 +194,33 @@ namespace ActivityService.Controllers
                 ProductId = extract.ProductId,
                 Hibernation = dormancyString
             };
+            if (isExportFailed)
+            {
+                updatingJob.Status = "failed";
+            }
+            else
+            {
+                updatingJob.Status = "accepted";
+            }
 
             // update calling result
             //
             Log.Information("Updating job {JobId} for user {UserId} for activity repository", activity.Id, userId);
             await Service.UpdateExportedAsync(activity.Id, updatingJob);
 
-            // wrap returning json
-            //
-            dynamic idObject = new JObject();
-            idObject.activityId = activity.Id;
-            
-            return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
+            if (isExportFailed)
+            {
+                throw error;
+            }
+            else
+            {
+                // wrap returning json
+                //
+                dynamic idObject = new JObject();
+                idObject.activityId = activity.Id;
+
+                return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
+            }
         }
 
         private async Task<string> ReadFromBodyAsync()
