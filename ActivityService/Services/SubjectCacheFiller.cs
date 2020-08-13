@@ -39,7 +39,6 @@ namespace ActivityService.Services
             {
                 var eduJson = await eduResponse.Content.ReadAsStringAsync();
                 eduLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(eduJson);
-                AddDefaultVersion(eduLevels);
             }
 
             return eduLevels;
