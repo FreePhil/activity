@@ -37,10 +37,13 @@
 
     1. activity instance login
         ssh -i operate.pem ec2-user@172.30.0.208
+        
     2. mongo instance login from activity instance
         ssh -i operate.pem ec2-user@172.30.128.16
+        
     3. login docker mongo instance from mongo
         docker exec -it 5d8d079d34c1 sh
+        
     4.  a. show abs
         b. show collections
         c. db.getCollection(‘v3-activities’).reIndex()
