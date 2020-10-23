@@ -23,6 +23,11 @@ namespace ActivityService.Services
             return Repository.AddAsync(activity);
         }
 
+        public Task<bool> DeleteActivityAsync(string id, string userId)
+        {
+            return Repository.DeleteUserActivityAsync(id, userId);
+        }
+
         public Task<bool> UpdatePayloadAsync(string id, string payload)
         {
             return Repository.UpdateAsync(id, ac => ac.Payload, payload);

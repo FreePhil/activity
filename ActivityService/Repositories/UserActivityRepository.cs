@@ -85,6 +85,15 @@ namespace ActivityService.Repositories
             return activities;
         }
 
+        public async Task<bool> DeleteUserActivityAsync(string id, string userId)
+        {
+            
+            var filter = Builders<UserActivity>.Filter.Where(activity => activity.Id == id && activity.UserId == userId);
+            var result = await Context.GetCollection<UserActivity>().DeleteOneAsync(filter);
+
+            return result.IsAcknowledged;
+        }
+
         public async Task<bool> UpdateExportedAsync(string id, UpdateExportedModel export)
         {
             var exportUpdatingQuery = Builders<UserActivity>.Update
