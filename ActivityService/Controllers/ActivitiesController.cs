@@ -75,7 +75,7 @@ namespace ActivityService.Controllers
         }
 
         [EnableCors("OpenAcess")]
-        [HttpDelete("{id}/user/{userId}")]
+        [HttpDelete("{id}/users/{userId}")]
         public async Task<ActionResult<object>> Delete(string id, string userId)
         {
             Log.Information("Delete activity record {id} for user {userId}", id, userId);
