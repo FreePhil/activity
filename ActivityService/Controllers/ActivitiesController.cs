@@ -73,6 +73,21 @@ namespace ActivityService.Controllers
             
             return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
         }
+
+        [EnableCors("OpenAcess")]
+        [HttpDelete("{id}/users/{userId}")]
+        public async Task<ActionResult<object>> Delete(string id, string userId)
+        {
+            Log.Information("Delete activity record {id} for user {userId}", id, userId);
+            var result = await Service.DeleteActivityAsync(id, userId);
+            
+            // wrap returning json
+            //
+            dynamic info = new JObject();
+            info.result = result;
+            
+            return info;
+        }
       
         [EnableCors("OpenAcess")]
         [HttpPost("{id}/status", Name = "status")]

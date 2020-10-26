@@ -7,9 +7,8 @@ namespace ActivityService.Services
     public interface IUserActivityService
     {
         Task<UserActivity> GetActivityAsync(string id);
-       
         Task AddActivityAsync(UserActivity activity);
-        
+        Task<bool> DeleteActivityAsync(string id, string userId);
         Task<bool> UpdatePayloadAsync(string id, string payload);
         Task<bool> UpdateOptionAsync(string id, string option);
         Task<bool> UpdateStatusAsync(string id, string status);
