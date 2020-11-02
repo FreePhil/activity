@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Routing;
 using Serilog;
 
+// some comments 
+//
 [assembly: ApiController]
 namespace ActivityService
 {
