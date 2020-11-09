@@ -74,6 +74,12 @@ namespace ActivityService.Controllers
             return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
         }
 
+        [HttpOptions("{id}/users/{userId}")]
+        public IActionResult PreflightRoute(string id, string userId)
+        {
+            return NoContent();
+        }
+
         [EnableCors("OpenAcess")]
         [HttpDelete("{id}/users/{userId}")]
         public async Task<ActionResult<object>> Delete(string id, string userId)
@@ -86,6 +92,28 @@ namespace ActivityService.Controllers
             dynamic info = new JObject();
             info.result = result;
             
+            return info;
+        }
+        
+        [HttpOptions("users/{userId}")]
+        public IActionResult PreflightRoute(string userId)
+        {
+            return NoContent();
+        }
+
+        [EnableCors("OpenAcess")]
+        [HttpDelete("users/{userId}")]
+        public async Task<ActionResult<object>> DeleteActivities([FromBody] IList<string> ids, string userId)
+        {
+            string idsString = ids.Aggregate((i, j) => i + "," + j);
+            Log.Information("Delete activity records {idsString} for user {userId}", idsString, userId);
+            var result = await Service.DeleteActivitiesAsync(ids, userId);
+
+            
+            // wrap returning json
+            //
+            dynamic info = new JObject();
+            info.result = result;
             return info;
         }
       

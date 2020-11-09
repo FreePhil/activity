@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -16,6 +17,7 @@ namespace ActivityService.Repositories
         Task<IList<UserActivity>> GetBySubjectAsync(string userId, string subjectName, string productName, int pageNo, int pageSize);
 
         Task<bool> DeleteUserActivityAsync(string id, string userId);
+        Task<long> DeleteManyUserActivitiesAsync(IList<string> ids, string userId);
         
         Task<bool> UpdateExportedAsync(string id, UpdateExportedModel export);
         Task<bool> UpdateCallbackAsync(string id, JobCompletionSummary job);

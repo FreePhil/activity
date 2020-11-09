@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -26,6 +27,11 @@ namespace ActivityService.Services
         public Task<bool> DeleteActivityAsync(string id, string userId)
         {
             return Repository.DeleteUserActivityAsync(id, userId);
+        }
+
+        public Task<long> DeleteActivitiesAsync(IList<string> ids, string userId)
+        {
+            return Repository.DeleteManyUserActivitiesAsync(ids, userId);
         }
 
         public Task<bool> UpdatePayloadAsync(string id, string payload)

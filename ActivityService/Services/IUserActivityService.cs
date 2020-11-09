@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -9,6 +10,7 @@ namespace ActivityService.Services
         Task<UserActivity> GetActivityAsync(string id);
         Task AddActivityAsync(UserActivity activity);
         Task<bool> DeleteActivityAsync(string id, string userId);
+        Task<long> DeleteActivitiesAsync(IList<string> ids, string userId);
         Task<bool> UpdatePayloadAsync(string id, string payload);
         Task<bool> UpdateOptionAsync(string id, string option);
         Task<bool> UpdateStatusAsync(string id, string status);
