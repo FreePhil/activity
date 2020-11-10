@@ -73,7 +73,8 @@ namespace ActivityService.Controllers
             
             return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
         }
-
+        
+        [EnableCors("OpenAcess")]
         [HttpOptions("{id}/users/{userId}")]
         public IActionResult PreflightRoute(string id, string userId)
         {
@@ -95,6 +96,7 @@ namespace ActivityService.Controllers
             return info;
         }
         
+        [EnableCors("OpenAcess")]
         [HttpOptions("users/{userId}")]
         public IActionResult PreflightRoute(string userId)
         {
@@ -108,7 +110,6 @@ namespace ActivityService.Controllers
             string idsString = ids.Aggregate((i, j) => i + "," + j);
             Log.Information("Delete activity records {idsString} for user {userId}", idsString, userId);
             var result = await Service.DeleteActivitiesAsync(ids, userId);
-
             
             // wrap returning json
             //
