@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ActivityService.Injections;
+using ActivityService.Models;
 using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -48,7 +49,7 @@ namespace ActivityService
             services
                 .AddCors(o =>
                 {
-                    o.AddPolicy("RestrictedAccess", builder =>
+                    o.AddPolicy(nameof(AccessScope.RestrictedAccess), builder =>
                     {
                         builder
                             .WithOrigins(new string[]
@@ -61,7 +62,7 @@ namespace ActivityService
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                     });
-                    o.AddPolicy("OpenAccess", builder =>
+                    o.AddPolicy(nameof(AccessScope.OpenAccess), builder =>
                     {
                         builder
                             .AllowAnyOrigin()

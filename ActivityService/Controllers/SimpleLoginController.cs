@@ -10,7 +10,7 @@ using Serilog;
 namespace ActivityService.Controllers
 {
     [Obsolete("Will be replace after Hanin ID establshed")]
-    [EnableCors("OpenAccess")]
+    [EnableCors(nameof(AccessScope.OpenAccess))]
     [ApiController]
     [Route("api/login")]
     public class SimpleLoginController: ControllerBase

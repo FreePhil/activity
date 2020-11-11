@@ -14,7 +14,7 @@ namespace ActivityService.Controllers
 {
     [ApiController]
     [Route("api/hibernation")]
-    [EnableCors("RestrictedAccess")]
+    [EnableCors(nameof(AccessScope.RestrictedAccess))]
     public class HibernationController: ControllerBase
     {
         public IHibernationService Service { get; }

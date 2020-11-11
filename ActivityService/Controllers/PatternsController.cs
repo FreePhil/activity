@@ -11,7 +11,7 @@ namespace ActivityService.Controllers
 {
     [ApiController]
     [Route("api/patterns")]
-    [EnableCors("RestrictedAccess")]
+    [EnableCors(nameof(AccessScope.RestrictedAccess))]
     public class PatternsController: ControllerBase
     {
         private IPatternService Service { get; }

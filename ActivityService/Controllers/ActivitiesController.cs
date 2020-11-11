@@ -30,15 +30,15 @@ namespace ActivityService.Controllers
             HibernationService = hibernateService;
         }
 
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.OpenAccess))]
         [HttpGet("cors-test")]
         public IActionResult Get()
         {
-            Log.Information("Access sucessfully");
+            Log.Information($"Access sucessfully");
             return Ok();
         }
         
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserActivity>> Get(string id)
         {
@@ -47,7 +47,7 @@ namespace ActivityService.Controllers
             return result;
         }
 
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpGet("{id}/hibernation")]
         public async Task<ActionResult<Hibernation>> GetHibernation(string id)
         {
@@ -60,7 +60,7 @@ namespace ActivityService.Controllers
             return dormancy;
         }
 
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpPost]
         public async Task<ActionResult<object>> Add([FromBody] UserActivity activity)
         {
@@ -74,14 +74,14 @@ namespace ActivityService.Controllers
             return CreatedAtAction(nameof(Get), new {id = activity.Id}, idObject);
         }
         
-        [EnableCors("OpenAccess")]
+        [EnableCors(nameof(AccessScope.OpenAccess))]
         [HttpOptions("{id}/users/{userId}")]
         public IActionResult PreflightRoute(string id, string userId)
         {
             return NoContent();
         }
 
-        [EnableCors("OpenAccess")]
+        [EnableCors(nameof(AccessScope.OpenAccess))]
         [HttpDelete("{id}/users/{userId}")]
         public async Task<ActionResult<object>> Delete(string id, string userId)
         {
@@ -96,14 +96,14 @@ namespace ActivityService.Controllers
             return info;
         }
         
-        [EnableCors("OpenAccess")]
+        [EnableCors(nameof(AccessScope.OpenAccess))]
         [HttpOptions("users/{userId}")]
         public IActionResult PreflightRoute(string userId)
         {
             return NoContent();
         }
 
-        [EnableCors("OpenAccess")]
+        [EnableCors(nameof(AccessScope.OpenAccess))]
         [HttpDelete("users/{userId}")]
         public async Task<ActionResult<object>> DeleteActivities([FromBody] IList<string> ids, string userId)
         {
@@ -118,7 +118,7 @@ namespace ActivityService.Controllers
             return info;
         }
       
-        [EnableCors("OpenAccess")]
+        [EnableCors(nameof(AccessScope.OpenAccess))]
         [HttpPost("{id}/status", Name = "status")]
         public async Task<ActionResult<object>> UpdateStatus(string id, [FromBody] JobCompletionSummary job)
         {
@@ -133,7 +133,7 @@ namespace ActivityService.Controllers
             return info;
         }
         
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpGet("subject/{userId}/count")]
         public async Task<ActionResult<long>> GetDocumentCountBySubject(string userId, 
             [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName)
@@ -141,7 +141,7 @@ namespace ActivityService.Controllers
             return await Service.GetActivitiCountBySubjectAsync(userId, subjectName, productName);
         }
 
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpGet("subject/{userId}/paging")]
         public async Task<ActionResult<IList<UserActivity>>> GetBySubject(string userId, 
             [FromQuery(Name = "subject")] string subjectName, [FromQuery(Name = "product")] string productName, 
@@ -151,14 +151,14 @@ namespace ActivityService.Controllers
             return activities.ToList();
         }
         
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpGet("user/{userId}/count")]
         public async Task<ActionResult<long>> GetDocumentCountByUser(string userId)
         {
             return await Service.GetActivityCountByUserAsync(userId);
         }
 
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpGet("user/{userId}/paging")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId, 
             [FromQuery(Name = "page_no")] int pageNo, [FromQuery(Name = "page_size")] int pageSize)
@@ -167,7 +167,7 @@ namespace ActivityService.Controllers
             return activities.ToList();    
         }
         
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IList<UserActivity>>> GetByUser(string userId)
         {
@@ -175,7 +175,7 @@ namespace ActivityService.Controllers
             return activities.ToList();
         }
                 
-        [EnableCors("RestrictedAccess")]
+        [EnableCors(nameof(AccessScope.RestrictedAccess))]
         [HttpPost("user/{userId}")]
         public async Task<ActionResult<object>> Export(string userId, 
             [FromServices] IHttpClientFactory clientFactory,
