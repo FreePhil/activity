@@ -7,7 +7,7 @@ namespace ActivityService.Services
     public class SubjectFetcherFactory: ISubjectFetcherFactory
     {
         private const string EduDomain = "edu";
-        private const string TestGoDemain = "testgo";
+        private const string TestGoDomain = "testgo";
 
         private ISubjectFetcher eduFetcher;
         private ISubjectFetcher testGoFetcher;
@@ -25,10 +25,8 @@ namespace ActivityService.Services
             {
                 case EduDomain:
                     return eduFetcher;
-                    break;
-                case TestGoDemain:
+                case TestGoDomain:
                     return testGoFetcher;
-                    break;
                 default:
                     throw new Exception($"{userDomain} did not implement");
             }
