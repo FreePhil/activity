@@ -13,20 +13,18 @@ namespace ActivityService.Controllers
     [Route("api/subjects")]
     public class SubjectsController: ControllerBase
     {
-        private ISubjectFetcherFactory fetcherFactory;
+        private ISubjectService subjectService;
 
-        public SubjectsController(ISubjectFetcherFactory fetcherFactory)
+        public SubjectsController(ISubjectService subjectService, ISubjectFetcherFactory fetcherFactory)
         {
-            this.fetcherFactory = fetcherFactory;
+            this.subjectService = subjectService;
         }
 
         [HttpGet("product-listing/{userId}")]
         public ActionResult<IList<Subject>> LoadSubjectDetail(string userId, [FromQuery(Name = "domain")] string domain)
         {
-            var fetcher = fetcherFactory.Create(domain);
-            var subjects = fetcher.Load(userId);
-
-            return Ok(subjects);
+            var subjectsOfAllLevels = subjectService.GetProductListing(userId, domain);
+            return Ok(subjectsOfAllLevels);
         }
 
         [HttpDelete("cache")]
