@@ -3,8 +3,8 @@ using ActivityService.Models;
 
 namespace ActivityService.Services
 {
-    public interface ISubjectFetcher
+    public interface ICacheLoader
     {
-        IList<EducationLevel> Load(string version, string userId);
+        IList<EducationLevel> ReadCache(string version);
     }
 }

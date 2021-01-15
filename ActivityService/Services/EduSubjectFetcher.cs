@@ -13,32 +13,17 @@ namespace ActivityService.Services
 {
     public class EduSubjectFetcher : ISubjectFetcher
     {
-        private ICacheFiller cacheFiller;
-        private IMemoryCache cache;
+        private ICacheLoader loader;
 
-        public EduSubjectFetcher(ICacheFiller cacheFiller, IMemoryCache cache)
+        public EduSubjectFetcher(ICacheLoader loader)
         {
-            this.cacheFiller = cacheFiller;
-            this.cache = cache;
+            this.loader = loader;
         }
 
-        public IList<EducationLevel> Load(string userId)
+        public IList<EducationLevel> Load(string version, string userId)
         {
-            IList<EducationLevel> levels = cache.GetOrCreate<IList<EducationLevel>>("education-level", entry =>
-            {
-                try
-                {
-                    Task<IList<EducationLevel>> task =
-                        Task.Run<IList<EducationLevel>>(async () => await cacheFiller.Load());
-                    return task.Result;
-                }
-                catch (Exception)
-                {
-                    return new List<EducationLevel>();
-                }
-            });
-
-            return levels; // always from cache
+            IList<EducationLevel> levels = loader.ReadCache(version);
+            return levels;
         }
     }
 }

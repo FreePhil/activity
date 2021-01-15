@@ -16,28 +16,28 @@ namespace ActivityService.Services
     {
         private IHttpClientFactory httpClientFactory;
         private JsonLocationOptions jsonUri;
-        private ICacheFiller cacheFiller;
         private IMemoryCache cache;
+        private ICacheLoader loader;
 
         public TestGoSubjectFetcher(
             IHttpClientFactory httpClientFactory, 
-            IOptionsMonitor<JsonLocationOptions> configAccessor, 
-            ICacheFiller cacheFiller,
-            IMemoryCache cache)
+            ICacheLoader loader,
+            IMemoryCache cache,
+            IOptionsMonitor<JsonLocationOptions> configAccessor)
         {
             this.httpClientFactory = httpClientFactory;
             this.jsonUri = configAccessor.CurrentValue;
-            this.cacheFiller = cacheFiller;
+            this.loader = loader;
             this.cache = cache;
         }
 
-        public IList<EducationLevel> Load(string userId)
+        public IList<EducationLevel> Load(string version, string userId)
         {
-            EnsureCacheLoaded();
+            EnsureCacheLoaded(version);
             Task<string> task = Task.Run<string>(async () =>
             {
                 var client = httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"{jsonUri.TestGoUri}/{userId}");
+                var response = await client.GetAsync($"{jsonUri.TestGoUri}/{userId}?v={version}");
                 return await response.Content.ReadAsStringAsync();
             });
 
@@ -47,21 +47,9 @@ namespace ActivityService.Services
             return ConvertToEducationLevel(subjectContainer);
         }
 
-        private void EnsureCacheLoaded()
+        private void EnsureCacheLoaded(string version)
         {
-            IList<EducationLevel> levels = cache.GetOrCreate<IList<EducationLevel>>("education-level", entry =>
-            {
-                try
-                {
-                    Task<IList<EducationLevel>> task =
-                        Task.Run<IList<EducationLevel>>(async () => await cacheFiller.Load());
-                    return task.Result;
-                }
-                catch (Exception)
-                {
-                    return new List<EducationLevel>();
-                }
-            });
+            IList<EducationLevel> levels = loader.ReadCache(version);
         }
 
         private IList<EducationLevel> ConvertToEducationLevel(TestGoSubject subjectContainer)

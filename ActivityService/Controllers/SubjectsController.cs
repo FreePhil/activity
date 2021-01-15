@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using ActivityService.Models;
+using ActivityService.Models.Options;
 using ActivityService.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace ActivityService.Controllers
@@ -21,18 +23,23 @@ namespace ActivityService.Controllers
         }
 
         [HttpGet("product-listing/{userId}")]
-        public ActionResult<IList<Subject>> LoadSubjectDetail(string userId, [FromQuery(Name = "domain")] string domain)
+        public ActionResult<IList<Subject>> LoadSubjectDetail(string userId,
+            [FromQuery(Name = "v")] string version, [FromQuery(Name = "domain")] string domain)
         {
-            var subjectsOfAllLevels = subjectService.GetProductListing(userId, domain);
+            var subjectsOfAllLevels = subjectService.GetProductListing(version, userId, domain);
             return Ok(subjectsOfAllLevels);
         }
 
         [HttpDelete("cache")]
-        public IActionResult RemoveCache([FromServices] IMemoryCache cache)
+        public IActionResult RemoveCache(
+            [FromServices] IMemoryCache cache, [FromServices] IOptionsMonitor<JsonLocationOptions> configAccessor)
         {
-            cache.Remove("education-level");
-            cache.Remove("subjects-lookup");
-            cache.Remove("products-lookup");
+            var config = configAccessor.CurrentValue;
+            
+            cache.Remove(config.CacheName.VersionCacheName);
+            cache.Remove(config.CacheName.EducationLevel);
+            cache.Remove(config.CacheName.SubjectsLookup);
+            cache.Remove(config.CacheName.ProductsLookup);
             
             Log.Information("cache removed");
             
