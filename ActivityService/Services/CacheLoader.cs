@@ -23,6 +23,8 @@ namespace ActivityService.Services
         
         public IList<EducationLevel> ReadCache(string version)
         {
+            // remove version info
+            //
             if (cache.TryGetValue(jsonUri.CacheName.VersionCacheName, out string cacheVersion))
             {
                 if (cacheVersion != version)
