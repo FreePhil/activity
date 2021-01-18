@@ -10,13 +10,13 @@ namespace ActivityService.Services
 {
     public class CacheLoader: ICacheLoader
     {
-        private ICacheFiller filler;
+        private IJsonLoader jsonLoader;
         private JsonLocationOptions jsonUri;
         private IMemoryCache cache;
 
-        public CacheLoader(ICacheFiller cacheFiller, IOptionsMonitor<JsonLocationOptions> configAccessor, IMemoryCache cache)
+        public CacheLoader(IJsonLoader jsonLoader, IOptionsMonitor<JsonLocationOptions> configAccessor, IMemoryCache cache)
         {
-            this.filler = cacheFiller;
+            this.jsonLoader = jsonLoader;
             this.jsonUri = configAccessor.CurrentValue;
             this.cache = cache;
         }
@@ -39,7 +39,7 @@ namespace ActivityService.Services
                 try
                 {
                     Task<IList<EducationLevel>> task =
-                        Task.Run<IList<EducationLevel>>(async () => await filler.Load());
+                        Task.Run<IList<EducationLevel>>(async () => await jsonLoader.Load());
                     return task.Result;
                 }
                 catch (Exception)

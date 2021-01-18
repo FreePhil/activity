@@ -5,7 +5,7 @@ using ActivityService.Models;
 
 namespace ActivityService.Services
 {
-    public interface ICacheFiller
+    public interface IJsonLoader
     { 
         Task<IList<EducationLevel>> Load();
     }

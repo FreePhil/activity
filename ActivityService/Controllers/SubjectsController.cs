@@ -38,9 +38,7 @@ namespace ActivityService.Controllers
             
             cache.Remove(config.CacheName.VersionCacheName);
             cache.Remove(config.CacheName.EducationLevel);
-            cache.Remove(config.CacheName.SubjectsLookup);
-            cache.Remove(config.CacheName.ProductsLookup);
-            
+
             Log.Information("cache removed");
             
             return NoContent();
