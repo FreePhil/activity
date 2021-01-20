@@ -33,7 +33,7 @@ namespace ActivityService.Services
             Task<string> task = Task.Run<string>(async () =>
             {
                 var client = httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"{jsonUri.TestGoSubjectUri}/{userId}?v={version}");
+                var response = await client.GetAsync($"{jsonUri.TestGoPermissibleUri}/{userId}?v={version}");
                 return await response.Content.ReadAsStringAsync();
             });
 

@@ -24,18 +24,26 @@ namespace ActivityService.Services
             this.cache = cache;
         }
    
-        public async Task<IList<EducationLevel>> Load()
+        public async Task<IList<EducationLevel>> Load(string version)
         {
-            // IList<EducationLevel> allLevels = null;
+            // todo: add version info
+            
+            // use test go subjects to generate the cache of lookup table
+            //
+            var testgoUri = $"{jsonUri.TestGoSubjectUri}/{version}/{jsonUri.TestGoSubjectFilename}";
             var httpClient = httpClientFactory.CreateClient();
-            using (var subjectResponse = await httpClient.GetAsync(jsonUri.SubjectUri))
+            using (var testgoResponse = await httpClient.GetAsync(testgoUri))
             {
-                var subjectJson = await subjectResponse.Content.ReadAsStringAsync();
-                var allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(subjectJson);
+                var testgoJson = await testgoResponse.Content.ReadAsStringAsync();
+                var allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(testgoJson);
                 CreateLookupCache(allLevels);
             }
+            
+            // use edu subject to generate default subjects for schools
+            //
+            var eduUri = $"{jsonUri.EduSubjectUri}/{version}/{jsonUri.EduSubjectFilename}";
             IList<EducationLevel> eduLevels = null;
-            using (var eduResponse = await httpClient.GetAsync(jsonUri.EduSubjectUri))
+            using (var eduResponse = await httpClient.GetAsync(eduUri))
             {
                 var eduJson = await eduResponse.Content.ReadAsStringAsync();
                 eduLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(eduJson);
@@ -69,8 +77,8 @@ namespace ActivityService.Services
                 }
             }
             
-            cache.Set<IDictionary<string, string>>("subjects-lookup", subjectDictionary);
-            cache.Set<IDictionary<string, string>>("products-lookup", productDictionary);
+            cache.Set<IDictionary<string, string>>(jsonUri.CacheName.SubjectsLookup, subjectDictionary);
+            cache.Set<IDictionary<string, string>>(jsonUri.CacheName.ProductsLookup, productDictionary);
         }
 
         private void AddDefaultVersion(IList<EducationLevel> levels)

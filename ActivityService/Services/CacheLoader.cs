@@ -39,7 +39,7 @@ namespace ActivityService.Services
                 try
                 {
                     Task<IList<EducationLevel>> task =
-                        Task.Run<IList<EducationLevel>>(async () => await filler.Load());
+                        Task.Run<IList<EducationLevel>>(async () => await filler.Load(version));
                     return task.Result;
                 }
                 catch (Exception)

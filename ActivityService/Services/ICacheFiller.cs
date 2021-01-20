@@ -7,6 +7,6 @@ namespace ActivityService.Services
 {
     public interface ICacheFiller
     { 
-        Task<IList<EducationLevel>> Load();
+        Task<IList<EducationLevel>> Load(string version);
     }
 }
