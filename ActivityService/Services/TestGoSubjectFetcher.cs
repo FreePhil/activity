@@ -16,80 +16,35 @@ namespace ActivityService.Services
     {
         private IHttpClientFactory httpClientFactory;
         private JsonLocationOptions jsonUri;
-        private ICacheLoader loader;
-        private IMemoryCache cache;
+        private ILookupCacheLoader loader;
 
         public TestGoSubjectFetcher(
             IHttpClientFactory httpClientFactory, 
-            ICacheLoader loader,
-            IMemoryCache cache,
+            ILookupCacheLoader loader,
             IOptionsMonitor<JsonLocationOptions> configAccessor)
         {
             this.httpClientFactory = httpClientFactory;
             this.jsonUri = configAccessor.CurrentValue;
-            this.cache = cache;
             this.loader = loader;
         }
 
-        public IList<EducationLevel> Load(string testgoVersion, string userId)
+        public IList<EducationLevel> Load(string testGoVersion, string userId)
         {
             Task<string> task = Task.Run<string>(async () =>
             {
                 var client = httpClientFactory.CreateClient();
-                var response = await client.GetAsync($"{jsonUri.TestGoPermissibleUri}/{userId}?v={testgoVersion}");
+                var response = await client.GetAsync($"{jsonUri.TestGoPermissibleUri}/{userId}?v={testGoVersion}");
                 return await response.Content.ReadAsStringAsync();
             });
 
             var subjectJson = task.Result;
             var subjectContainer = JsonConvert.DeserializeObject<TestGoSubject>(subjectJson);
 
-            var currentVersion = cache.Get<String>(jsonUri.CacheName.TestGoVersionCacheName);
-            if (testgoVersion != currentVersion)
-            {
-                var testgoUri = $"{jsonUri.TestGoSubjectUri}/{testgoVersion}/{jsonUri.TestGoSubjectFilename}";
-                var httpClient = httpClientFactory.CreateClient();
-
-                var response = httpClient.GetAsync(testgoUri).ConfigureAwait(false).GetAwaiter().GetResult();
-                using (response)
-                {
-                    var testgoJson = response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    var allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(testgoJson);
-                    CreateLookupCache(allLevels);
-                }
-            }
+            loader.ReadCache(testGoVersion);
 
             return ConvertToEducationLevel(subjectContainer);
         }
-        private void CreateLookupCache(IList<EducationLevel> levels)
-        {
-            if (levels == null) return;
         
-            IDictionary<string, string> subjectDictionary = new Dictionary<string, string>(); 
-            IDictionary<string, string> productDictionary = new Dictionary<string, string>();
-
-            foreach (var level in levels)
-            {
-                foreach (var subject in level.Subjects)
-                {
-                    if (!subjectDictionary.ContainsKey(subject.Id))
-                    {
-                        subjectDictionary.Add(subject.Id, subject.Name);
-                    }
-                    foreach (var product in subject.Products)
-                    {
-                        if (!productDictionary.ContainsKey(product.Id))
-                        {
-                            productDictionary.Add(product.Id, product.Name);
-                        }
-                    }
-                }
-            }
-        
-            cache.Set<IDictionary<string, string>>(jsonUri.CacheName.SubjectsLookup, subjectDictionary);
-            cache.Set<IDictionary<string, string>>(jsonUri.CacheName.ProductsLookup, productDictionary);
-        }
-
-
         private IList<EducationLevel> ConvertToEducationLevel(TestGoSubject container)
         {
             var levelsDictionary = new Dictionary<string, EducationLevel>

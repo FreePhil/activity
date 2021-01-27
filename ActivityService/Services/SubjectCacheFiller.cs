@@ -26,19 +26,6 @@ namespace ActivityService.Services
    
         public async Task<IList<EducationLevel>> Load(string version)
         {
-            // todo: add version info
-            
-            // use test go subjects to generate the cache of lookup table
-            //
-            // var testgoUri = $"{jsonUri.TestGoSubjectUri}/{version}/{jsonUri.TestGoSubjectFilename}";
-            // var httpClient = httpClientFactory.CreateClient();
-            // using (var testgoResponse = await httpClient.GetAsync(testgoUri))
-            // {
-            //     var testgoJson = await testgoResponse.Content.ReadAsStringAsync();
-            //     var allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(testgoJson);
-            //     CreateLookupCache(allLevels);
-            // }
-            
             // use edu subject to generate default subjects for schools
             //
             var httpClient = httpClientFactory.CreateClient();
@@ -51,20 +38,6 @@ namespace ActivityService.Services
             }
 
             return eduLevels;
-        }
-        
-        private void AddDefaultVersion(IList<EducationLevel> levels)
-        {
-            foreach (var level in levels)
-            {
-                foreach (var subject in level.Subjects)
-                {
-                    foreach (var product in subject.Products)
-                    {
-                        product.Versions.Add(new LookupModel { Id = "H", Name = "翰林版"});
-                    }
-                }
-            }
         }
     }
 }
