@@ -46,7 +46,6 @@ namespace ActivityService.Injections
             services.AddTransient<TestGoSubjectFetcher>();
             services.AddTransient<EduSubjectFetcher>();
             services.AddTransient<ICacheLoader, EduCacheLoader>();
-            services.AddTransient<ILookupCacheLoader, LookupCacheLoader>();
             services.AddTransient<ICacheFiller, SubjectCacheFiller>();
 
             services.AddHttpClient();

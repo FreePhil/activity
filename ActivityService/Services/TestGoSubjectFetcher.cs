@@ -16,16 +16,13 @@ namespace ActivityService.Services
     {
         private IHttpClientFactory httpClientFactory;
         private JsonLocationOptions jsonUri;
-        private ILookupCacheLoader loader;
 
         public TestGoSubjectFetcher(
             IHttpClientFactory httpClientFactory, 
-            ILookupCacheLoader loader,
             IOptionsMonitor<JsonLocationOptions> configAccessor)
         {
             this.httpClientFactory = httpClientFactory;
             this.jsonUri = configAccessor.CurrentValue;
-            this.loader = loader;
         }
 
         public IList<EducationLevel> Load(string testGoVersion, string userId)
@@ -39,8 +36,6 @@ namespace ActivityService.Services
 
             var subjectJson = task.Result;
             var subjectContainer = JsonConvert.DeserializeObject<TestGoSubject>(subjectJson);
-
-            loader.ReadCache(testGoVersion);
 
             return ConvertToEducationLevel(subjectContainer);
         }
