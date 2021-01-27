@@ -8,38 +8,34 @@ using Microsoft.Extensions.Options;
 
 namespace ActivityService.Services
 {
-    public class CacheLoader: ICacheLoader
+    public class EduCacheLoader: ICacheLoader
     {
         private ICacheFiller filler;
         private JsonLocationOptions jsonUri;
         private IMemoryCache cache;
 
-        public CacheLoader(ICacheFiller cacheFiller, IOptionsMonitor<JsonLocationOptions> configAccessor, IMemoryCache cache)
+        public EduCacheLoader(ICacheFiller cacheFiller, IOptionsMonitor<JsonLocationOptions> configAccessor, IMemoryCache cache)
         {
             this.filler = cacheFiller;
             this.jsonUri = configAccessor.CurrentValue;
             this.cache = cache;
         }
         
-        public IList<EducationLevel> ReadCache(string version)
+        public IList<EducationLevel> ReadCache(string eduVersion)
         {
-            // remove version info
-            //
-            if (cache.TryGetValue(jsonUri.CacheName.VersionCacheName, out string cacheVersion))
+            // String currentVersion = string.Empty;
+            var currentVersion = cache.Get<String>(jsonUri.CacheName.EduVersionCacheName);
+            if (eduVersion != currentVersion)
             {
-                if (cacheVersion != version)
-                {
-                    cache.Remove(jsonUri.CacheName.VersionCacheName);
-                    cache.Remove(jsonUri.CacheName.EducationLevel);
-                }
+                cache.Remove(jsonUri.CacheName.EducationLevel);
             }
             IList<EducationLevel> levels = cache.GetOrCreate<IList<EducationLevel>>(jsonUri.CacheName.EducationLevel, entry =>
             {
-                cache.Set(jsonUri.CacheName.VersionCacheName, version);
+                cache.Set(jsonUri.CacheName.EduVersionCacheName, eduVersion);
                 try
                 {
                     Task<IList<EducationLevel>> task =
-                        Task.Run<IList<EducationLevel>>(async () => await filler.Load(version));
+                        Task.Run<IList<EducationLevel>>(async () => await filler.Load(eduVersion));
                     return task.Result;
                 }
                 catch (Exception)

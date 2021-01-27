@@ -30,17 +30,18 @@ namespace ActivityService.Services
             
             // use test go subjects to generate the cache of lookup table
             //
-            var testgoUri = $"{jsonUri.TestGoSubjectUri}/{version}/{jsonUri.TestGoSubjectFilename}";
-            var httpClient = httpClientFactory.CreateClient();
-            using (var testgoResponse = await httpClient.GetAsync(testgoUri))
-            {
-                var testgoJson = await testgoResponse.Content.ReadAsStringAsync();
-                var allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(testgoJson);
-                CreateLookupCache(allLevels);
-            }
+            // var testgoUri = $"{jsonUri.TestGoSubjectUri}/{version}/{jsonUri.TestGoSubjectFilename}";
+            // var httpClient = httpClientFactory.CreateClient();
+            // using (var testgoResponse = await httpClient.GetAsync(testgoUri))
+            // {
+            //     var testgoJson = await testgoResponse.Content.ReadAsStringAsync();
+            //     var allLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(testgoJson);
+            //     CreateLookupCache(allLevels);
+            // }
             
             // use edu subject to generate default subjects for schools
             //
+            var httpClient = httpClientFactory.CreateClient();
             var eduUri = $"{jsonUri.EduSubjectUri}/{version}/{jsonUri.EduSubjectFilename}";
             IList<EducationLevel> eduLevels = null;
             using (var eduResponse = await httpClient.GetAsync(eduUri))
@@ -52,35 +53,6 @@ namespace ActivityService.Services
             return eduLevels;
         }
         
-        private void CreateLookupCache(IList<EducationLevel> levels)
-        {
-            if (levels == null) return;
-            
-            IDictionary<string, string> subjectDictionary = new Dictionary<string, string>(); 
-            IDictionary<string, string> productDictionary = new Dictionary<string, string>();
-
-            foreach (var level in levels)
-            {
-                foreach (var subject in level.Subjects)
-                {
-                    if (!subjectDictionary.ContainsKey(subject.Id))
-                    {
-                        subjectDictionary.Add(subject.Id, subject.Name);
-                    }
-                    foreach (var product in subject.Products)
-                    {
-                        if (!productDictionary.ContainsKey(product.Id))
-                        {
-                            productDictionary.Add(product.Id, product.Name);
-                        }
-                    }
-                }
-            }
-            
-            cache.Set<IDictionary<string, string>>(jsonUri.CacheName.SubjectsLookup, subjectDictionary);
-            cache.Set<IDictionary<string, string>>(jsonUri.CacheName.ProductsLookup, productDictionary);
-        }
-
         private void AddDefaultVersion(IList<EducationLevel> levels)
         {
             foreach (var level in levels)

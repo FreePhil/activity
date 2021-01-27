@@ -36,7 +36,8 @@ namespace ActivityService.Controllers
         {
             var config = configAccessor.CurrentValue;
             
-            cache.Remove(config.CacheName.VersionCacheName);
+            cache.Remove(config.CacheName.EduVersionCacheName);
+            cache.Remove(config.CacheName.TestGoVersionCacheName);
             cache.Remove(config.CacheName.EducationLevel);
 
             Log.Information("cache removed");
