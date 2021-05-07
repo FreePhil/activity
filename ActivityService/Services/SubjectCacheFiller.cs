@@ -8,6 +8,7 @@ using ActivityService.Models.Options;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace ActivityService.Services
 {
@@ -31,6 +32,8 @@ namespace ActivityService.Services
             var httpClient = httpClientFactory.CreateClient();
             var eduUri = $"{jsonUri.EduSubjectUri}/{version}/{jsonUri.EduSubjectFilename}";
             IList<EducationLevel> eduLevels = null;
+            
+            Log.Information("read data from {eduUri}", eduUri);
             using (var eduResponse = await httpClient.GetAsync(eduUri))
             {
                 var eduJson = await eduResponse.Content.ReadAsStringAsync();

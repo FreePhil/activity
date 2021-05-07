@@ -5,6 +5,7 @@ using ActivityService.Models;
 using ActivityService.Models.Options;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace ActivityService.Services
 {
@@ -34,6 +35,8 @@ namespace ActivityService.Services
                 cache.Set(jsonUri.CacheName.EduVersionCacheName, eduVersion);
                 try
                 {
+                    Log.Information("read education levels from json files");
+                    
                     Task<IList<EducationLevel>> task =
                         Task.Run<IList<EducationLevel>>(async () => await filler.Load(eduVersion));
                     return task.Result;
