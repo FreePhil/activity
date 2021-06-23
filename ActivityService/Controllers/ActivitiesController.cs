@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
-using Serilog.Events;
+
 
 namespace ActivityService.Controllers
 {
