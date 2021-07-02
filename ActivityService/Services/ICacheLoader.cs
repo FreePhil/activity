@@ -6,6 +6,6 @@ namespace ActivityService.Services
 {
     public interface ICacheLoader
     {
-        Task<IList<EducationLevel>> ReadCache(string version);
+        IList<EducationLevel> ReadCache(string version);
     }
 }

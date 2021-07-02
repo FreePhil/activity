@@ -20,7 +20,7 @@ namespace ActivityService.Services
             this.loader = loader;
         }
 
-        public async Task<IList<EducationLevel>> Load(string version, string userId)
+        public IList<EducationLevel> Load(string version, string userId)
         {
             IList<EducationLevel> levels = loader.ReadCache(version);
             return levels;

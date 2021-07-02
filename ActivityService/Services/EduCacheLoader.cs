@@ -22,7 +22,7 @@ namespace ActivityService.Services
             this.cache = cache;
         }
         
-        public async Task<IList<EducationLevel>> ReadCache(string eduVersion)
+        public IList<EducationLevel> ReadCache(string eduVersion)
         {
             // String currentVersion = string.Empty;
             var currentVersion = cache.Get<String>(jsonUri.CacheName.EduVersionCacheName);
@@ -34,7 +34,6 @@ namespace ActivityService.Services
             {
                 try
                 {
-                    filler.Load(eduVersion);
                     Task<IList<EducationLevel>> task =
                         Task.Run<IList<EducationLevel>>(async () => await filler.Load(eduVersion));
                     cache.Set(jsonUri.CacheName.EduVersionCacheName, eduVersion);
