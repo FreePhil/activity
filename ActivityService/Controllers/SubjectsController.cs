@@ -26,7 +26,9 @@ namespace ActivityService.Controllers
         public ActionResult<IList<Subject>> LoadSubjectDetail(string userId,
             [FromQuery(Name = "v")] string version, [FromQuery(Name = "domain")] string domain)
         {
+            Log.Information("list products for {Version} of {Domain} by {UserId}", version, domain, userId);
             var subjectsOfAllLevels = subjectService.GetProductListing(version, userId, domain);
+            
             return Ok(subjectsOfAllLevels);
         }
 

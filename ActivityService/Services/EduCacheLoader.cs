@@ -22,7 +22,7 @@ namespace ActivityService.Services
             this.cache = cache;
         }
         
-        public IList<EducationLevel> ReadCache(string eduVersion)
+        public async Task<IList<EducationLevel>> ReadCache(string eduVersion)
         {
             // String currentVersion = string.Empty;
             var currentVersion = cache.Get<String>(jsonUri.CacheName.EduVersionCacheName);
@@ -32,17 +32,19 @@ namespace ActivityService.Services
             }
             IList<EducationLevel> levels = cache.GetOrCreate<IList<EducationLevel>>(jsonUri.CacheName.EducationLevel, entry =>
             {
-                cache.Set(jsonUri.CacheName.EduVersionCacheName, eduVersion);
                 try
                 {
-                    Log.Information("read education levels from json files");
-                    
+                    filler.Load(eduVersion);
                     Task<IList<EducationLevel>> task =
                         Task.Run<IList<EducationLevel>>(async () => await filler.Load(eduVersion));
+                    cache.Set(jsonUri.CacheName.EduVersionCacheName, eduVersion);
+                    
+                    Log.Information("read education levels from json files and cache version set to {EduVersion}", eduVersion);
                     return task.Result;
                 }
                 catch (Exception)
                 {
+                    Log.Error("failed to read education levels from json files for version {EduVersion}", eduVersion);
                     return new List<EducationLevel>();
                 }
             });
