@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Models.Options;
 using ActivityService.Services;
@@ -23,11 +24,11 @@ namespace ActivityService.Controllers
         }
 
         [HttpGet("product-listing/{userId}")]
-        public ActionResult<IList<Subject>> LoadSubjectDetail(string userId,
+        public async Task<ActionResult<IList<Subject>>> LoadSubjectDetail(string userId,
             [FromQuery(Name = "v")] string version, [FromQuery(Name = "domain")] string domain)
         {
             Log.Information("list products for {Version} of {Domain} by {UserId}", version, domain, userId);
-            var subjectsOfAllLevels = subjectService.GetProductListing(version, userId, domain);
+            var subjectsOfAllLevels = await Task.Run(() => subjectService.GetProductListing(version, userId, domain));
             
             return Ok(subjectsOfAllLevels);
         }
