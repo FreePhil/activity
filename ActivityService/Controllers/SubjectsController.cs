@@ -28,7 +28,8 @@ namespace ActivityService.Controllers
             [FromQuery(Name = "v")] string version, [FromQuery(Name = "domain")] string domain)
         {
             Log.Information("list products for {Version} of {Domain} by {UserId}", version, domain, userId);
-            var subjectsOfAllLevels = await Task.Run(() => subjectService.GetProductListing(version, userId, domain));
+            var subjectsOfAllLevels = await Task.Run(() => 
+                subjectService.GetProductListing(version, userId, domain)).ConfigureAwait(false);
             
             return Ok(subjectsOfAllLevels);
         }
