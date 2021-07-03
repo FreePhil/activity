@@ -24,31 +24,25 @@ namespace ActivityService.Services
         
         public IList<EducationLevel> ReadCache(string eduVersion)
         {
-            // String currentVersion = string.Empty;
-            var currentVersion = cache.Get<String>(jsonUri.CacheName.EduVersionCacheName);
-            if (eduVersion != currentVersion)
+            var educationLevels =
+                cache.Get<IDictionary<string, IList<EducationLevel>>>(jsonUri.CacheName.EducationLevel);
+            IList<EducationLevel> educationLevel;
+            if (!educationLevels.TryGetValue(eduVersion, out educationLevel))
             {
-                cache.Remove(jsonUri.CacheName.EducationLevel);
-            }
-            IList<EducationLevel> levels = cache.GetOrCreate<IList<EducationLevel>>(jsonUri.CacheName.EducationLevel, entry =>
-            {
+                Task<IList<EducationLevel>> task = 
+                    Task.Run<IList<EducationLevel>>(async () => await filler.Load(eduVersion).ConfigureAwait(false));
+                educationLevel = task.Result;
                 try
                 {
-                    Task<IList<EducationLevel>> task =
-                        Task.Run<IList<EducationLevel>>(async () => await filler.Load(eduVersion));
-                    cache.Set(jsonUri.CacheName.EduVersionCacheName, eduVersion);
-                    
-                    Log.Information("read education levels from json files and cache version set to {EduVersion}", eduVersion);
-                    return task.Result;
+                    educationLevels.Add(eduVersion, educationLevel);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Log.Error("failed to read education levels from json files for version {EduVersion}", eduVersion);
-                    return new List<EducationLevel>();
+                    Log.Error("version {Version} of education level existing can not be appended to cache. {Message}", eduVersion, e.Message);
                 }
-            });
+            }
 
-            return levels; // always from cache
+            return educationLevel;
         }
     }
 }

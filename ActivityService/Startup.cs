@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,8 @@ using ActivityService.Models.Options;
 using ActivityService.Repositories;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 // some comments 
@@ -32,6 +35,7 @@ namespace ActivityService
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.AddMemoryCache();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<ForwardedHeadersOptions>(options =>
@@ -93,10 +97,20 @@ namespace ActivityService
             Log.Information("index of table 'patterns' checked");
         }
 
+        private void InitializeCache(IApplicationBuilder app)
+        {
+            var cache = app.ApplicationServices.GetService<IMemoryCache>();
+            var option = app.ApplicationServices.GetService<IOptionsMonitor<JsonLocationOptions>>();
+
+            string educationLevelCacheName = option.CurrentValue.CacheName.EducationLevel;
+            cache.Set(educationLevelCacheName, new Dictionary<string, IList<EducationLevel>>());
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             CheckOrBuildIndexes(app);
+            InitializeCache(app);
             
             if (env.IsDevelopment())
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActivityService.Models;
@@ -27,10 +28,19 @@ namespace ActivityService.Controllers
         public async Task<ActionResult<IList<Subject>>> LoadSubjectDetail(string userId,
             [FromQuery(Name = "v")] string version, [FromQuery(Name = "domain")] string domain)
         {
-            Log.Information("list products for {Version} of {Domain} by {UserId}", version, domain, userId);
-            var subjectsOfAllLevels = await Task.Run(() => 
-                subjectService.GetProductListing(version, userId, domain)).ConfigureAwait(false);
-            
+            IList<EducationLevel> subjectsOfAllLevels = new List<EducationLevel>();
+            try
+            {
+                subjectsOfAllLevels = await Task.Run(() =>
+                    subjectService.GetProductListing(version, userId, domain)).ConfigureAwait(false);
+                Log.Information("listed products for {Version} of {Domain} by {UserId}", version, domain, userId);
+            }
+            catch (Exception e)
+            {
+                Log.Error("failed to list products for {Version} of {Domain} by {UserId}. {Message}", 
+                    version, domain, userId, e.Message);
+            }
+
             return Ok(subjectsOfAllLevels);
         }
 
@@ -40,12 +50,10 @@ namespace ActivityService.Controllers
         {
             var config = configAccessor.CurrentValue;
             
-            cache.Remove(config.CacheName.EduVersionCacheName);
             cache.Remove(config.CacheName.TestGoVersionCacheName);
-            cache.Remove(config.CacheName.EducationLevel);
-
-            Log.Information("cache removed");
+            cache.Set(config.CacheName.EducationLevel, new Dictionary<string, IList<EducationLevel>>());
             
+            Log.Information("cache removed");
             return NoContent();
         }
     }

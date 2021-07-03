@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace ActivityService.Services
             using (var eduResponse = await httpClient.GetAsync(eduUri))
             {
                 var eduJson = await eduResponse.Content.ReadAsStringAsync();
-                eduLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(eduJson);
+                    eduLevels = JsonConvert.DeserializeObject<IList<EducationLevel>>(eduJson);
             }
 
             return eduLevels;
