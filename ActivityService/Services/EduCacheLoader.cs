@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ActivityService.Models;
 using ActivityService.Models.Options;
@@ -11,6 +12,7 @@ namespace ActivityService.Services
 {
     public class EduCacheLoader: ICacheLoader
     {
+        private static object lockObject = new object();
         private ICacheFiller filler;
         private JsonLocationOptions jsonUri;
         private IMemoryCache cache;
@@ -29,16 +31,25 @@ namespace ActivityService.Services
             IList<EducationLevel> educationLevel;
             if (!educationLevels.TryGetValue(eduVersion, out educationLevel))
             {
-                Task<IList<EducationLevel>> task = 
-                    Task.Run<IList<EducationLevel>>(async () => await filler.Load(eduVersion).ConfigureAwait(false));
-                educationLevel = task.Result;
-                try
-                {
-                    educationLevels.Add(eduVersion, educationLevel);
+                if (Monitor.TryEnter(lockObject)) {
+                    Task<IList<EducationLevel>> task =
+                        Task.Run<IList<EducationLevel>>(async () =>
+                            await filler.Load(eduVersion).ConfigureAwait(false));
+                    educationLevel = task.Result;
+                    try
+                    {
+                        educationLevels.Add(eduVersion, educationLevel);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(
+                            "version {Version} of education level existing can not be appended to cache. {Message}",
+                            eduVersion, e.Message);
+                    }
                 }
-                catch (Exception e)
+                else
                 {
-                    Log.Error("version {Version} of education level existing can not be appended to cache. {Message}", eduVersion, e.Message);
+                    educationLevel = new List<EducationLevel>();
                 }
             }
 

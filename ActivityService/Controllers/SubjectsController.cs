@@ -25,14 +25,13 @@ namespace ActivityService.Controllers
         }
 
         [HttpGet("product-listing/{userId}")]
-        public async Task<ActionResult<IList<Subject>>> LoadSubjectDetail(string userId,
+        public ActionResult<IList<Subject>> LoadSubjectDetail(string userId,
             [FromQuery(Name = "v")] string version, [FromQuery(Name = "domain")] string domain)
         {
             IList<EducationLevel> subjectsOfAllLevels = new List<EducationLevel>();
             try
             {
-                subjectsOfAllLevels = await Task.Run(() =>
-                    subjectService.GetProductListing(version, userId, domain)).ConfigureAwait(false);
+                subjectsOfAllLevels = subjectService.GetProductListing(version, userId, domain);
                 Log.Information("listed products for {Version} of {Domain} by {UserId}", version, domain, userId);
             }
             catch (Exception e)
